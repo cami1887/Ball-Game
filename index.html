@@ -7,74 +7,253 @@
       * {
         padding: 0;
         margin: 0;
+        cursor: default;
       }
+
+      body {
+        background-image: url("images/planetbackground.jpg");
+      }
+
+      @font-face {
+        font-family: mainFont;
+        src: url(fonts/power_pixel-7.ttf);
+      }
+
+      @font-face {
+        font-family: scoreFont;
+        src: url(fonts/ARCADECLASSIC.TTF);
+      }
+
+      h1 {
+        position: relative;
+        font-family: mainFont;
+        font-size: 70px;
+        color: white;
+        padding-top: 50px;
+        text-align: center;
+        cursor: default;
+      }
+
+      #container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+      }
+
+      #game-container {
+        position: relative;
+      }
+
       canvas {
-        background: #eee;
+        z-index: 0;
+        border-radius: 15px;
         display: block;
-        margin: 0 auto;
+        margin: 5% auto;
+      }
+
+      #resultScreen {
+        position: absolute;
+        visibility: hidden;
+        opacity: 0;
+        z-index: 1;
+        top: 5%;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        width: 800px;
+        height: 500px;
+      }
+
+      #results {
+        text-align: center;
+        font-family: scoreFont;
+        font-size: 80px;
+        color: white;
+        padding-top: 10%;
+      }
+
+      #points {
+        font-family: scoreFont;
+        text-align: center;
+        font-size: 30px;
+        color: white;
+        padding-top: 10%;
+      }
+
+      #button {
+        font-family: scoreFont;
+        display: block;
+        margin: 10% auto;
+        font-size: 50px;
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        color: rgb(104, 104, 104);
+      }
+
+      #button:hover {
+        color: rgb(157, 232, 255);
+      }
+
+      #selection-container {
+        height: 650px;
+        width: 300px;
+        top: 20%;
+        color: rgb(0, 0, 0);
+        background-color: rgba(245, 245, 220, 0);
+      }
+
+      #mission-container {
+        height: 650px;
+        width: 300px;
+        top: 20%;
+        color: rgb(0, 0, 0);
+        background-color: rgba(245, 245, 220, 0);
       }
     </style>
   </head>
   <body>
-    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <audio id="mainAudio" loop controls>
+      <source
+        src="audio/play-again-classic-arcade-game-116820.mp3"
+        type="audio/mp3"
+      />
+      Your browser does not support the audio element. -->
+    </audio>
+
+    <h1>Destroy The UFOs</h1>
+
+    <div id="container">
+      <nav id="selection-container">
+        <div id="sound-options">
+          <p>Sound Options</p>
+          <img src="" />
+          <img src="" />
+        </div>
+        <div id="projectile-options">
+          <p>Pick Your Projectile!</p>
+          <img />
+          <img />
+          <img />
+        </div>
+      </nav>
+
+      <main id="game-container">
+        <canvas id="myCanvas" width="800" height="550"></canvas>
+        <div id="resultScreen">
+          <p id="results"></p>
+          <p id="points"></p>
+          <button id="button">Try Again</button>
+        </div>
+      </main>
+
+      <nav id="mission-container">
+        <p id="mission-title">Mission Log <span>Year 2093458320</span></p>
+        <p id="mission-description">
+          It's finally come. They've come to destroy us. The war between Bunny
+          and Extraterrestrial has lasted a millenia and now we're down to our
+          last legs. Will we survive? After all this would we even deserve it?
+          .....Of course not silly, we're bunnies! Hit the UFO's with your
+          asteroid to eliminate the hoard of aliens one by one... or don't. It's
+          only the fate of the world hanging in the balance.
+        </p>
+      </nav>
+    </div>
 
     <script>
+      //MAKE a how to and menu with customizable ufo and projectile
+      //ADD AUDIO FOR WHEN THE BALL HITS THE BRICKS AND WALLS and when your mouse goes over buttons and when you click something
+      //MAKE DIFFERENT DIFFICULTIES, MAKE BRICKS NEED TO BE HIT TWICE, CHANGE BRICK ORIENTATION
+      
+
       const canvas = document.getElementById("myCanvas");
       const ctx = canvas.getContext("2d");
+      let levelMultiplier = [1, 2, 3];
       let dx = 4;
       let dy = -4;
       let x = canvas.width / 2;
       let y = canvas.height - 30;
-      const paddleHeight = 10;
+      const paddleHeight = 55;
       const paddleWidth = 75;
       let paddleX = (canvas.width - paddleWidth) / 2;
       let rightPressed = false;
       let leftPressed = false;
-      const ballRadius = 10;
-      const brickRowCount = 3;
-      const brickColumnCount = 5;
-      const brickWidth = 75;
-      const brickHeight = 20;
+      const ballRadius = 12;
+      const brickRowCount = 1;
+      const brickColumnCount = 8;
+      const brickWidth = 85;
+      const brickHeight = 35;
       const brickPadding = 10;
       const brickOffsetTop = 30;
       const brickOffsetLeft = 30;
       const bricks = [];
       let score = 0;
       let lives = 3;
+      let resultScreen = document.getElementById("resultScreen");
+      let results = document.getElementById("results");
+      let points = document.getElementById("points");
+      let button = document.getElementById("button");
+      let movement = 0;
+      let appear = 0;
 
       for (let c = 0; c < brickColumnCount; c++) {
         bricks[c] = [];
         for (let r = 0; r < brickRowCount; r++) {
-          bricks[c][r] = { x: 0, y: 0, status: 1};
+          bricks[c][r] = { x: 0, y: 0, status: 1 };
         }
       }
 
       document.addEventListener("keydown", keyDownHandler, false);
       document.addEventListener("keyup", keyUpHandler, false);
       document.addEventListener("mousemove", mouseMoveHandler, false);
+      button.addEventListener("click", tryAgain);
 
-      function keyDownHandler(e) {
-        if (e.key === "Right" || e.key === "ArrowRight") {
+      function keyDownHandler(event) {
+        if (event.key === "Right" || event.key === "ArrowRight") {
           rightPressed = true;
-        } else if (e.key === "Left" || e.key === "ArrowLeft") {
+        } else if (event.key === "Left" || event.key === "ArrowLeft") {
           leftPressed = true;
         }
       }
 
-      function keyUpHandler(e) {
-        if (e.key === "Right" || e.key === "ArrowRight") {
+      function keyUpHandler(event) {
+        if (event.key === "Right" || event.key === "ArrowRight") {
           rightPressed = false;
-        } 
-        else if (e.key === "Left" || e.key === "ArrowLeft") {
+        } else if (event.key === "Left" || event.key === "ArrowLeft") {
           leftPressed = false;
         }
       }
 
-      function mouseMoveHandler(e) {
-        const relativeX = e.clientX - canvas.offsetLeft;
-        if (relativeX > paddleWidth/2 && relativeX < canvas.width - (paddleWidth/2)) {
+      function mouseMoveHandler(event) {
+        const relativeX = event.clientX - canvas.offsetLeft;
+        if (
+          relativeX > paddleWidth / 2 &&
+          relativeX < canvas.width - paddleWidth / 2
+        ) {
           paddleX = relativeX - paddleWidth / 2;
         }
+      }
+
+      function slowlyAppear() {
+        resultScreen.style.visibility = 'visible';
+        if (appear <= 100) {
+          resultScreen.style.opacity = `${appear}%`;
+        }
+         appear+=2;
+         requestAnimationFrame(slowlyAppear);
+      }
+
+      function endGameAnimation() {
+          let result = 2*Math.sin(movement*.05)+5;
+          console.log(result);
+          movement++;
+          console.log(movement);
+          resultScreen.style.top = `${result}%`;
+          requestAnimationFrame(endGameAnimation);
+        }
+
+      function tryAgain(event) {
+          document.location.reload();
       }
 
       function collisionDetection() {
@@ -88,31 +267,46 @@
                 y > b.y &&
                 y < b.y + brickHeight
               ) {
+                let collisionSound = new Audio('audio/decidemp3-14575.mp3');
+                collisionSound.playbackRate = 2;
+                collisionSound.preservesPitch= true;
+                collisionSound.play();
+
                 dy = -dy;
                 b.status = 0;
                 score++;
-                if (score === brickRowCount * brickColumnCount) {
-                  alert("YOU WIN, CONGRATULATIONS!");
-                  document.location.reload();
-                }
+
               }
+              if (score === brickRowCount * brickColumnCount) {
+                  results.innerHTML = "Dont let it get to your head";
+                  points.innerHTML = `Score: ${score}`;
+                  requestAnimationFrame(slowlyAppear);
+                  requestAnimationFrame(endGameAnimation);
+                  return false;
+                }
             }
           }
         }
       }
 
       function drawBall() {
+        let projectile = new Image();
+        projectile.src = "images/icons8-asteroid-32.png";
         ctx.beginPath();
-        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "#0095DD";
+        ctx.drawImage(projectile, x, y);
+        // ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "White";
         ctx.fill();
         ctx.closePath();
       }
 
       function drawPaddle() {
+        let spaceShip = new Image();
+        spaceShip.src = "images/icons8-spaceship-64 (1).png";
         ctx.beginPath();
-        ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-        ctx.fillStyle = "#0095DD";
+        ctx.drawImage(spaceShip, paddleX, canvas.height - paddleHeight, 80, 70);
+        // ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+        // ctx.fillStyle = "white";
         ctx.fill();
         ctx.closePath();
       }
@@ -125,8 +319,11 @@
               const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
               bricks[c][r].x = brickX;
               bricks[c][r].y = brickY;
+              let ufo = new Image();
+              ufo.src = "images/icons8-ufo-67 (1).png";
               ctx.beginPath();
-              ctx.rect(brickX, brickY, brickWidth, brickHeight);
+              ctx.drawImage(ufo, brickX, brickY);
+              // ctx.rect(brickX, brickY, brickWidth, brickHeight);
               ctx.fillStyle = "#0095DD";
               ctx.fill();
               ctx.closePath();
@@ -136,65 +333,73 @@
       }
 
       function drawScore() {
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText(`Score: ${score}`, 8, 20);
+        ctx.font = "22px scoreFont";
+        ctx.fillStyle = "rgb(157, 232, 255)";
+        ctx.fillText(`Score: ${score}`, 18, 25);
       }
 
       function drawLives() {
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+        ctx.font = "22px scoreFont";
+        ctx.fillStyle = "rgb(157, 232, 255)";
+        ctx.fillText(`Lives: ${lives}`, canvas.width - 95, 25);
       }
 
       function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let newImage = new Image();
+        newImage.src = "images/spacebackground.jpg";
+
+        newImage.onload = () => {
+          ctx.drawImage(newImage, 0, 0, 1200, 600);
+        };
+
         drawBricks();
         drawBall();
         drawPaddle();
         drawScore();
         drawLives();
-        collisionDetection();
-        
-        if (x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
-            dx = -dx;
+
+        if (collisionDetection() === false) {
+          return;
+        }
+
+        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+          dx = -dx;
         }
         if (y + dy < ballRadius) {
           dy = -dy;
-        } 
-        else if (y + dy > canvas.height - ballRadius) {
+        } else if (y + dy > canvas.height - ballRadius) {
           if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy;
-          } 
-          else {
+          } else {
             lives--;
             if (!lives) {
-              alert("GAME OVER");
-              document.location.reload();
-            } 
-            else {
+              results.innerHTML = "Dont worry... I wont tell anyone";
+              points.innerHTML = `Score: ${score}`;
+              requestAnimationFrame(slowlyAppear);
+              requestAnimationFrame(endGameAnimation);
+              return;
+            } else {
               x = canvas.width / 2;
               y = canvas.height - 30;
-              dx = 2;
-              dy = -2;
+              dx = 4;
+              dy = -4;
               paddleX = (canvas.width - paddleWidth) / 2;
             }
           }
         }
-        if (rightPressed && paddleX < canvas.width-paddleWidth) {
+        if (rightPressed && paddleX < canvas.width - paddleWidth) {
           paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
-        } 
-        else if (leftPressed && paddleX > 0) {
+        } else if (leftPressed && paddleX > 0) {
           paddleX = Math.max(paddleX - 7, 0);
-        }  
+        }
+
         x += dx;
         y += dy;
-
         requestAnimationFrame(draw);
       }
 
       draw();
-
     </script>
   </body>
 </html>
