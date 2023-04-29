@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8" />
-    <title>Gamedev Canvas Workshop</title>
+    <title>Destroy The UFOs</title>
     <style>
       * {
         padding: 0;
@@ -36,7 +36,7 @@
 
       #container {
         display: grid;
-        grid-template-columns: auto auto auto;
+        grid-template-columns: 1fr 3fr 1fr;
       }
 
       #game-container {
@@ -50,18 +50,33 @@
         margin: 5% auto;
       }
 
-      #resultScreen {
+      .resultScreen {
         position: absolute;
-        visibility: hidden;
-        opacity: 0;
         z-index: 1;
-        top: 5%;
         left: 0;
         right: 0;
         margin-left: auto;
         margin-right: auto;
         width: 800px;
         height: 500px;
+        animation: bounceResults 3s linear infinite, slowlyAppear 2s;
+      }
+
+      @keyframes slowlyAppear {
+        from {
+          opacity: 0;
+          visibility: hidden;
+        }
+        to {
+          opacity: 100;
+          visibility: visible;
+        }
+      }
+
+      @keyframes bounceResults {
+        0% {top: 6%;}
+        50% {top: 0%;}
+        100% {top: 6%}
       }
 
       #results {
@@ -96,29 +111,45 @@
       }
 
       #selection-container {
-        height: 650px;
-        width: 300px;
-        top: 20%;
-        color: rgb(0, 0, 0);
-        background-color: rgba(245, 245, 220, 0);
+        text-align: center;
+        height: 600px;
+        width: 200px;
+        color: rgb(255, 255, 255);
       }
 
       #mission-container {
-        height: 650px;
-        width: 300px;
-        top: 20%;
-        color: rgb(0, 0, 0);
-        background-color: rgba(245, 245, 220, 0);
+        margin: 100px auto 100px auto;
+        height: 300px;
+        /* width: 250px; */
+        color: rgb(255, 255, 255);
+        background-color: rgb(192, 198, 202);
       }
     </style>
   </head>
   <body>
-    <audio id="mainAudio" loop controls>
-      <source
-        src="audio/play-again-classic-arcade-game-116820.mp3"
-        type="audio/mp3"
-      />
-      Your browser does not support the audio element. -->
+    <audio id="mainAudio" autoplay loop >
+      <source src="./audio/suits-you-69233.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+
+    <audio id="buttonClickAudio" >
+      <source src="./audio/message-incoming-132126.mp3" type="audio/mp3">
+      Your browser does not support the audio tag.
+    </audio>
+
+    <audio id="losingScreenAudio" >
+      <source src="./audio/8-bit-video-game-lose-sound-version-1-145828.mp3" type="audio/mp3">
+      Your browser does not support the audio tag.
+    </audio>
+
+    <audio id="winningScreenAudio" >
+      <source src="./audio/winsquare-6993.mp3" type="audio/mp3">
+      Your browser does not support the audio tag.
+    </audio>
+
+    <audio id="bounceAudio" >
+      <source src="./audio/jump_c_02-102843 (2).mp3" type="audio/mp3">
+      Your browser does not support the audio tag.
     </audio>
 
     <h1>Destroy The UFOs</h1>
@@ -140,7 +171,7 @@
 
       <main id="game-container">
         <canvas id="myCanvas" width="800" height="550"></canvas>
-        <div id="resultScreen">
+        <div id="resultContainer">
           <p id="results"></p>
           <p id="points"></p>
           <button id="button">Try Again</button>
@@ -161,40 +192,37 @@
     </div>
 
     <script>
-      //MAKE a how to and menu with customizable ufo and projectile
-      //ADD AUDIO FOR WHEN THE BALL HITS THE BRICKS AND WALLS and when your mouse goes over buttons and when you click something
-      //MAKE DIFFERENT DIFFICULTIES, MAKE BRICKS NEED TO BE HIT TWICE, CHANGE BRICK ORIENTATION
-      
-
       const canvas = document.getElementById("myCanvas");
       const ctx = canvas.getContext("2d");
-      let levelMultiplier = [1, 2, 3];
       let dx = 4;
       let dy = -4;
       let x = canvas.width / 2;
-      let y = canvas.height - 30;
-      const paddleHeight = 55;
-      const paddleWidth = 75;
-      let paddleX = (canvas.width - paddleWidth) / 2;
+      let y = canvas.height - 55;
+      const paddleHeight = 70;
+      const paddleWidth = 80;
+      let paddleX = (canvas.width - paddleWidth)/ 2;
       let rightPressed = false;
       let leftPressed = false;
-      const ballRadius = 12;
-      const brickRowCount = 1;
+      const ballRadius = 15;
+      const brickRowCount = 3;
       const brickColumnCount = 8;
-      const brickWidth = 85;
-      const brickHeight = 35;
-      const brickPadding = 10;
+      const brickWidth = 70;
+      const brickHeight = 30;
+      const brickPadding = 30;
       const brickOffsetTop = 30;
-      const brickOffsetLeft = 30;
+      const brickOffsetLeft = 20;
       const bricks = [];
       let score = 0;
       let lives = 3;
-      let resultScreen = document.getElementById("resultScreen");
+      let resultContainer = document.getElementById("resultContainer");
       let results = document.getElementById("results");
       let points = document.getElementById("points");
       let button = document.getElementById("button");
-      let movement = 0;
-      let appear = 0;
+      let mainAudio = document.getElementById("mainAudio");
+      let bounceAudio = document.getElementById("bounceAudio");
+      // let collisionAudio = document.getElementById("collisionAudio");
+      let losingScreenAudio = document.getElementById("losingScreenAudio");
+      let winningScreenAudio = document.getElementById("winningScreenAudio");
 
       for (let c = 0; c < brickColumnCount; c++) {
         bricks[c] = [];
@@ -225,35 +253,23 @@
       }
 
       function mouseMoveHandler(event) {
-        const relativeX = event.clientX - canvas.offsetLeft;
+        const relativeX = event.clientX- (canvas.offsetLeft*3.2);
         if (
           relativeX > paddleWidth / 2 &&
           relativeX < canvas.width - paddleWidth / 2
         ) {
-          paddleX = relativeX - paddleWidth / 2;
+          paddleX = relativeX - paddleWidth/2;
         }
       }
-
-      function slowlyAppear() {
-        resultScreen.style.visibility = 'visible';
-        if (appear <= 100) {
-          resultScreen.style.opacity = `${appear}%`;
-        }
-         appear+=2;
-         requestAnimationFrame(slowlyAppear);
-      }
-
-      function endGameAnimation() {
-          let result = 2*Math.sin(movement*.05)+5;
-          console.log(result);
-          movement++;
-          console.log(movement);
-          resultScreen.style.top = `${result}%`;
-          requestAnimationFrame(endGameAnimation);
-        }
 
       function tryAgain(event) {
-          document.location.reload();
+          buttonClickAudio.volume = .2;
+          buttonClickAudio.play();
+          setTimeout(restartGame, 1000);  
+      }
+
+      function restartGame() {
+        document.location.reload();
       }
 
       function collisionDetection() {
@@ -267,21 +283,22 @@
                 y > b.y &&
                 y < b.y + brickHeight
               ) {
-                let collisionSound = new Audio('audio/decidemp3-14575.mp3');
-                collisionSound.playbackRate = 2;
-                collisionSound.preservesPitch= true;
-                collisionSound.play();
-
+                let collisionAudio = new Audio();
+                collisionAudio.volume = .2;
+                collisionAudio.src = "./audio/message-incoming-132126.mp3";
+                collisionAudio.playbackRate = 3; 
+                collisionAudio.play();
                 dy = -dy;
                 b.status = 0;
                 score++;
-
               }
+
               if (score === brickRowCount * brickColumnCount) {
+                  document.getElementById("mainAudio").pause();
+                  winningScreenAudio.play();
                   results.innerHTML = "Dont let it get to your head";
                   points.innerHTML = `Score: ${score}`;
-                  requestAnimationFrame(slowlyAppear);
-                  requestAnimationFrame(endGameAnimation);
+                  resultContainer.classList.toggle("resultScreen");
                   return false;
                 }
             }
@@ -293,9 +310,7 @@
         let projectile = new Image();
         projectile.src = "images/icons8-asteroid-32.png";
         ctx.beginPath();
-        ctx.drawImage(projectile, x, y);
-        // ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "White";
+        ctx.drawImage(projectile, x, y, 30, 30);
         ctx.fill();
         ctx.closePath();
       }
@@ -304,9 +319,7 @@
         let spaceShip = new Image();
         spaceShip.src = "images/icons8-spaceship-64 (1).png";
         ctx.beginPath();
-        ctx.drawImage(spaceShip, paddleX, canvas.height - paddleHeight, 80, 70);
-        // ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-        // ctx.fillStyle = "white";
+        ctx.drawImage(spaceShip, paddleX, canvas.height - paddleHeight, 80, 80);
         ctx.fill();
         ctx.closePath();
       }
@@ -322,8 +335,7 @@
               let ufo = new Image();
               ufo.src = "images/icons8-ufo-67 (1).png";
               ctx.beginPath();
-              ctx.drawImage(ufo, brickX, brickY);
-              // ctx.rect(brickX, brickY, brickWidth, brickHeight);
+              ctx.drawImage(ufo, brickX, brickY, 70, 60);
               ctx.fillStyle = "#0095DD";
               ctx.fill();
               ctx.closePath();
@@ -345,13 +357,12 @@
       }
 
       function draw() {
-
+        mainAudio.volume = .5;
         let newImage = new Image();
         newImage.src = "images/spacebackground.jpg";
-
         newImage.onload = () => {
-          ctx.drawImage(newImage, 0, 0, 1200, 600);
-        };
+          ctx.drawImage(newImage, 0, 0, 1200, 650);
+        }
 
         drawBricks();
         drawBall();
@@ -370,20 +381,25 @@
           dy = -dy;
         } else if (y + dy > canvas.height - ballRadius) {
           if (x > paddleX && x < paddleX + paddleWidth) {
+            bounceAudio.playbackRate = 4;
+            bounceAudio.play();
             dy = -dy;
           } else {
             lives--;
             if (!lives) {
+              document.getElementById("mainAudio").pause();
+              losingScreenAudio.volume = .15;
+              losingScreenAudio.play();
               results.innerHTML = "Dont worry... I wont tell anyone";
               points.innerHTML = `Score: ${score}`;
-              requestAnimationFrame(slowlyAppear);
-              requestAnimationFrame(endGameAnimation);
+              resultContainer.classList.toggle("resultScreen");
               return;
-            } else {
+            } 
+            else {
               x = canvas.width / 2;
               y = canvas.height - 30;
-              dx = 4;
-              dy = -4;
+              dx = Math.abs(dx);
+              dy = -Math.abs(dy);
               paddleX = (canvas.width - paddleWidth) / 2;
             }
           }
