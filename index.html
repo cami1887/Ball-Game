@@ -5,9 +5,9 @@
     <title>Destroy The UFOs</title>
     <style>
       * {
-        padding: 0;
-        margin: 0;
         cursor: default;
+        margin: 0;
+        padding: 0;
       }
 
       body {
@@ -15,7 +15,7 @@
       }
 
       @font-face {
-        font-family: mainFont;
+        font-family: titleFont;
         src: url(fonts/power_pixel-7.ttf);
       }
 
@@ -25,19 +25,19 @@
       }
 
       h1 {
-        position: relative;
-        font-family: mainFont;
-        font-size: 70px;
         color: white;
-        padding-top: 50px;
-        text-align: center;
         cursor: default;
+        font-family: titleFont;
+        font-size: 70px;
+        padding-top: 50px;
+        position: relative;
+        text-align: center;
       }
 
       #container {
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
         grid-gap: .7%;
+        grid-template-columns: 1fr auto 1fr;
       }
 
       #game-container {
@@ -45,22 +45,22 @@
       }
 
       canvas {
-        z-index: 0;
         border-radius: 15px;
         display: block;
         margin: 5% auto;
+        z-index: 0;
       }
 
       #resultContainer {
-        position: absolute;
-        z-index: 1;
+        animation: slowlyAppear 2s, bounceResults 3s linear infinite;
+        height: 500px;
         left: 0;
-        right: 0;
         margin-left: auto;
         margin-right: auto;
+        position: absolute; 
+        right: 0;
         width: 800px;
-        height: 500px;
-        animation: slowlyAppear 2s, bounceResults 3s linear infinite;
+        z-index: 1;
       }
 
       .resultScreen {
@@ -83,30 +83,30 @@
       }
 
       #results {
-        text-align: center;
+        color: white;
         font-family: scoreFont;
         font-size: 80px;
-        color: white;
         padding-top: 10%;
+        text-align: center;
       }
 
       #points {
-        font-family: scoreFont;
-        text-align: center;
-        font-size: 30px;
         color: white;
+        font-family: scoreFont;
+        font-size: 30px;
         padding-top: 10%;
+        text-align: center;
       }
 
       #button {
-        font-family: scoreFont;
-        display: block;
-        margin: 10% auto;
-        font-size: 50px;
-        cursor: pointer;
-        border: none;
         background-color: transparent;
+        border: none;
         color: rgb(104, 104, 104);
+        cursor: pointer;
+        display: block;
+        font-family: scoreFont;
+        font-size: 50px;
+        margin: 10% auto;
       }
 
       #button:hover {
@@ -114,36 +114,83 @@
       }
 
       #selection-container {
-        text-align: center;
-        font-size: 24px;
-        font-family: scoreFont;
-        height: 600px;
-        width: 75%;
         color: rgb(255, 255, 255);
+        font-family: scoreFont;
+        font-size: 15px;
+        height: 600px;
+        padding-left: 18%;
+        padding-top: 110px;
+        text-align: center;
+        width: 65%;
       }
 
       #mission-container {
+        background-color: rgba(135, 155, 168, 0.37);
+        border-color:rgb(157, 232, 255);
         border-radius: 25px;
         border-style: double;
-        padding: 15px;
+        color: rgb(238, 238, 238);
+        display: flex;
+        flex-direction: column;
         font-family: scoreFont;
         font-size: 20px;
-        margin: 100px auto 100px auto;
-        height: 350px;
-        width: 75%;
-        color: rgb(0, 7, 102);
-        background-color: rgb(135, 155, 168);
+        margin: 20% 5% 30% 5%;
+        padding: 15px;
+      }
+
+      .sidebarTitle {
+        font-size: 30px;
+        padding-bottom: 5%;
+      }
+      .missionLogTitle {
+        align-items: center;
+        display: flex;
+        font-size: 30px;
+        justify-content: space-between;
+        padding-bottom: 2%;
+      }
+
+      .missionLogTitle span{
+        color: rgb(157, 232, 255);
+        font-size: 17px;
+      }
+
+      #missionDescription {
+        padding-top: 3%;
+      }
+
+      .projectileContainer {
+        column-gap: 4%;
+        display: grid;
+        grid-template-columns: 35px auto;
+        padding: 4% 14%;
+      }
+
+      .projectileContainer p:hover {
+        color:rgb(135, 208, 233);
+      }
+
+      #soundIcons {
+        column-gap: 5%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-bottom: 10%;
       }
     </style>
   </head>
   <body>
-    //when toggling audio, just pause/play all audio when sound is turned on/off 
     <audio id="mainAudio" autoplay loop >
       <source src="./audio/suits-you-69233.mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
 
     <audio id="buttonClickAudio" >
+      <source src="./audio/message-incoming-132126.mp3" type="audio/mp3">
+      Your browser does not support the audio tag.
+    </audio>
+
+    <audio id="collisionAudio">
       <source src="./audio/message-incoming-132126.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
@@ -168,26 +215,42 @@
     <div id="container">
       <nav id="selection-container">
         <div id="sound-options">
-          <p>Sound Options</p>
-          <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z" fill="currentColor"/>
-          </svg>
-          <!-- <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13 2h-2v2H9v2H7v2H3v8h4v2h2v2h2v2h2V2zM9 18v-2H7v-2H5v-4h2V8h2V6h2v12H9zm10-6.777h-2v-2h-2v2h2v2h-2v2h2v-2h2v2h2v-2h-2v-2zm0 0h2v-2h-2v2z" fill="currentColor"/>
-          </svg> -->
-          <svg height="24" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-            <path d="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z"/>
-          </svg>
-          <!-- <svg height="24" fill="white" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-            <path d="m2 5.27 1.28-1.27 16.72 16.72-1.27 1.28-9.73-9.73v5.23a3.5 3.5 0 0 1 -3.5 3.5 3.5 3.5 0 0 1 -3.5-3.5 3.5 3.5 0 0 1 3.5-3.5c.54 0 1.05.12 1.5.34v-4.07zm19-2.27v12.5c0 1-.43 1.92-1.12 2.56l-4.94-4.94c.64-.69 1.56-1.12 2.56-1.12.54 0 1.05.12 1.5.34v-5.87l-8.83 1.88-2.51-2.51z"/>
-          </svg> -->
+          <p class="sidebarTitle">Sound Options</p>
+          <div id="soundIcons">
+            <svg  width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path id="soundEffects" d="M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z" fill="currentColor"/>
+            </svg>
+            <!-- <svg id="soundEffectsOff" class="audioOff" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" display="none">
+              <path d="M13 2h-2v2H9v2H7v2H3v8h4v2h2v2h2v2h2V2zM9 18v-2H7v-2H5v-4h2V8h2V6h2v12H9zm10-6.777h-2v-2h-2v2h2v2h-2v2h2v-2h2v2h2v-2h-2v-2zm0 0h2v-2h-2v2z" fill="currentColor"/>
+            </svg> -->
+            <svg  height="24" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path id="backgroundMusic" d="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z"/>
+            </svg>
+            <!-- <svg id="backgroundMusicOff" height="24" fill="white" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" display="none">
+              <path d="m2 5.27 1.28-1.27 16.72 16.72-1.27 1.28-9.73-9.73v5.23a3.5 3.5 0 0 1 -3.5 3.5 3.5 3.5 0 0 1 -3.5-3.5 3.5 3.5 0 0 1 3.5-3.5c.54 0 1.05.12 1.5.34v-4.07zm19-2.27v12.5c0 1-.43 1.92-1.12 2.56l-4.94-4.94c.64-.69 1.56-1.12 2.56-1.12.54 0 1.05.12 1.5.34v-5.87l-8.83 1.88-2.51-2.51z"/>
+            </svg> -->
+          </div>
         </div>
-        <div id="projectile-options">
-          <p>Pick Your Projectile!</p>
-          <img src="./images/icons8-asteroid-32.png"/>
-          <img src="./images/icons8-pixel-star-30.png" />
-          <img src="./images/icons8-pixel-heart-48 (2).png" height="32px"/>
-          <img src="./images/39a0467a264a285.png" height="32px"/>
+        <div id="projectileOptions">
+          <p class="sidebarTitle">Pick Your Projectile!</p>
+          <div id="projectileIcons">
+            <div  class="projectileContainer">
+              <img src="./images/icons8-asteroid-32.png"/>
+              <p id="asteroidProjectile">The default projectile. Don't ask how we got it.</p>
+            </div>
+            <div  class="projectileContainer">
+              <img src="./images/icons8-pixel-star-30.png" />
+              <p id="starProjectile">Who knew a big ball of gas would look so cute!</p>
+            </div>
+            <div  class="projectileContainer">
+              <img src="./images/icons8-pixel-heart-48 (2).png" height="32px"/>
+              <p id="heartProjectile">It's not mean if we have good intentions ... right?</p>
+            </div>
+            <div  class="projectileContainer">
+              <img src="./images/39a0467a264a285.png"  height="32px"/>
+              <p id="carrotProjectile">Because we actually don't like these all that much</p>
+            </div>
+          </div>
         </div>
       </nav>
 
@@ -201,21 +264,37 @@
       </main>
 
       <nav id="mission-container">
-        <p id="mission-title">Mission Log <span>Year 2093458320</span></p>
-        <p id="mission-description">
-          It's finally come. They've come to destroy us. The war between Bunny
-          and Extraterrestrial has lasted a millenia and now we're down to our
-          last legs. Will we survive? After all this would we even deserve it?
-          .....Of course not silly, we're bunnies! Hit the UFO's with your
-          asteroid to eliminate the hoard of aliens one by one... or don't. It's
-          only the fate of the world hanging in the balance.
-        </p>
+        <p class="missionLogTitle">Mission Log <span>Year: 2093458320</span></p>
+        <hr>
+        <div id="missionDescription">
+          <p>
+            It's finally come.
+          </p> 
+          <br>
+          <p>
+            They're here to destroy us. The war between Bunny
+            and Extraterrestrial has lasted a millenia and now we're down to our
+            last legs. Will we survive? After all this would we even deserve it?
+          </p>
+          <br>
+          <p>
+            .....Of course not silly, we're bunnies!
+          </p>
+          <br>
+          <p>
+            Hit the UFO's with your
+            asteroid to eliminate the hoard of aliens one by one... or don't. It's
+            only the fate of the world hanging in the balance.
+          </p>
+        </div>
       </nav>
     </div>
 
     <script>
       const canvas = document.getElementById("myCanvas");
       const ctx = canvas.getContext("2d");
+      let score = 0;
+      let lives = 3;
       let dx = 4;
       let dy = -4;
       let x = canvas.width / 2;
@@ -234,18 +313,36 @@
       const brickOffsetTop = 30;
       const brickOffsetLeft = 20;
       const bricks = [];
-      let score = 0;
-      let lives = 3;
-      let resultContainer = document.getElementById("resultContainer");
-      let results = document.getElementById("results");
-      let points = document.getElementById("points");
-      let button = document.getElementById("button");
-      let mainAudio = document.getElementById("mainAudio");
-      let bounceAudio = document.getElementById("bounceAudio");
-      // let collisionAudio = document.getElementById("collisionAudio");
-      let losingScreenAudio = document.getElementById("losingScreenAudio");
-      let winningScreenAudio = document.getElementById("winningScreenAudio");
+      const resultContainer = document.getElementById("resultContainer");
+      const results = document.getElementById("results");
+      const points = document.getElementById("points");
+      const button = document.getElementById("button");
+      const mainAudio = document.getElementById("mainAudio");
+      const bounceAudio = document.getElementById("bounceAudio");
+      const collisionAudio = document.getElementById("collisionAudio");
+      const losingScreenAudio = document.getElementById("losingScreenAudio");
+      const winningScreenAudio = document.getElementById("winningScreenAudio");
+      const soundEffects = document.getElementById("soundEffects");
+      const backgroundMusic = document.getElementById("backgroundMusic");
+      const buttonClickAudio = document.getElementById("buttonClickAudio");
+      const asteroidProjectile = document.getElementById("asteroidProjectile");
+      const starProjectile = document.getElementById("starProjectile");
+      const heartProjectile = document.getElementById("heartProjectile");
+      const carrotProjectile = document.getElementById("carrotProjectile");
+      const projectile = new Image();
+      projectile.src = "images/icons8-asteroid-32.png";
 
+      document.addEventListener("keydown", keyDownHandler, false);
+      document.addEventListener("keyup", keyUpHandler, false);
+      document.addEventListener("mousemove", mouseMoveHandler, false);
+      button.addEventListener("click", tryAgain);
+      soundEffects.addEventListener("click", toggleSoundEffects);
+      backgroundMusic.addEventListener("click", toggleBackgroundMusic);
+      asteroidProjectile.addEventListener("click", selectProjectile);
+      starProjectile.addEventListener("click", selectProjectile);
+      heartProjectile.addEventListener("click", selectProjectile);
+      carrotProjectile.addEventListener("click", selectProjectile);
+      
       for (let c = 0; c < brickColumnCount; c++) {
         bricks[c] = [];
         for (let r = 0; r < brickRowCount; r++) {
@@ -253,10 +350,48 @@
         }
       }
 
-      document.addEventListener("keydown", keyDownHandler, false);
-      document.addEventListener("keyup", keyUpHandler, false);
-      document.addEventListener("mousemove", mouseMoveHandler, false);
-      button.addEventListener("click", tryAgain);
+      function toggleSoundEffects(event) {
+        let on = `M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z`;
+        let off = `M13 2h-2v2H9v2H7v2H3v8h4v2h2v2h2v2h2V2zM9 18v-2H7v-2H5v-4h2V8h2V6h2v12H9zm10-6.777h-2v-2h-2v2h2v2h-2v2h2v-2h2v2h2v-2h-2v-2zm0 0h2v-2h-2v2z`;
+        
+        if (soundEffects.getAttribute("d") === on) {
+          soundEffects.setAttribute("d", off);
+          bounceAudio.muted = "false";
+          collisionAudio.muted = "false";
+          buttonClickAudio.muted = "false";
+          
+        }
+         else if (soundEffects.getAttribute("d") === off){
+            soundEffects.setAttribute("d", on);
+            bounceAudio.muted = "true";
+            collisionAudio.muted = "true";
+            buttonClickAudio.muted = "true";
+          }
+      }
+
+      function toggleBackgroundMusic(event) {
+
+        let on ="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z";
+        let off ="m2 5.27 1.28-1.27 16.72 16.72-1.27 1.28-9.73-9.73v5.23a3.5 3.5 0 0 1 -3.5 3.5 3.5 3.5 0 0 1 -3.5-3.5 3.5 3.5 0 0 1 3.5-3.5c.54 0 1.05.12 1.5.34v-4.07zm19-2.27v12.5c0 1-.43 1.92-1.12 2.56l-4.94-4.94c.64-.69 1.56-1.12 2.56-1.12.54 0 1.05.12 1.5.34v-5.87l-8.83 1.88-2.51-2.51z";
+        
+         if (backgroundMusic.getAttribute("d") === on) {
+          backgroundMusic.setAttribute("d", off);
+          mainAudio.muted = "false";
+          losingScreenAudio.muted = "false";
+          winningScreenAudio.muted = "false";
+        }
+          
+        else if (backgroundMusic.getAttribute("d") === off) {
+          backgroundMusic.setAttribute("d", on);
+          mainAudio.muted = "true";
+          losingScreenAudio.muted = "true";
+          winningScreenAudio.muted = "true";
+        }
+      }
+      
+      function selectProjectile(event) {
+          projectile.src = event.target.previousElementSibling.src;
+      }
 
       function keyDownHandler(event) {
         if (event.key === "Right" || event.key === "ArrowRight") {
@@ -305,14 +440,13 @@
                 y > b.y &&
                 y < b.y + brickHeight
               ) {
-                let collisionAudio = new Audio();
                 collisionAudio.volume = .2;
-                collisionAudio.src = "./audio/message-incoming-132126.mp3";
                 collisionAudio.playbackRate = 3; 
                 collisionAudio.play();
                 dy = -dy;
                 b.status = 0;
                 score++;
+                
               }
 
               if (score === brickRowCount * brickColumnCount) {
@@ -329,8 +463,6 @@
       }
 
       function drawBall() {
-        let projectile = new Image();
-        projectile.src = "images/icons8-asteroid-32.png";
         ctx.beginPath();
         ctx.drawImage(projectile, x, y, 30, 30);
         ctx.fill();
