@@ -1,0 +1,392 @@
+      //change projectile speed to projectile velocity or position change
+      
+      const canvas = document.getElementById("my-canvas");
+      const ctx = canvas.getContext("2d");
+      let switchProjectile;
+      let levelScore = 0;
+      let totalScore = 0;
+      let levelCount = 1;
+      let lives = 3;
+      const characterHeight = 63;
+      const characterWidth = 80;
+      const projectileRadius = 15;
+      let projectileSpeedX = 4;
+      let projectileSpeedY = -4;
+      let projectilePositionX = canvas.width / 2;
+      let projectilePositionY = canvas.height - projectileRadius;
+      let characterPositionX = (canvas.width - characterWidth)/ 2;
+      let rightArrowPressed = false;
+      let leftArrowPressed = false;
+      let ufoRowCount = 2;
+      let ufoColumnCount = 7;
+      const ufoWidth = 70;
+      const ufoHeight = 30;
+      let ufoPadding = 35;
+      let ufoOffsetTop = 30;
+      let ufoOffsetLeft = 30;
+      const ufos = [];
+      const resultContainer = document.getElementById("result-container");
+      const results = document.getElementById("results");
+      const points = document.getElementById("points");
+      const tryAgainButton = document.getElementById("try-again-button");
+      const startOver = document.getElementById("start-from-beginning");
+      const mainAudio = document.getElementById("main-audio");
+      const bounceAudio = document.getElementById("bounce-audio");
+      const collisionAudio = document.getElementById("collision-audio");
+      const losingScreenAudio = document.getElementById("losing-screen-audio");
+      const winningScreenAudio = document.getElementById("winning-screen-audio");
+      const allSoundEffects = document.getElementById("sound-effects");
+      const allBackgroundMusic = document.getElementById("background-music");
+      const buttonClickAudio = document.getElementById("button-click-audio");
+      const asteroidProjectile = document.getElementById("asteroid-projectile");
+      const starProjectile = document.getElementById("star-projectile");
+      const heartProjectile = document.getElementById("heart-projectile");
+      const carrotProjectile = document.getElementById("carrot-projectile");
+      const levelTwo = document.getElementById("level-two");
+      const levelThree = document.getElementById("level-three");
+      const projectile = new Image();
+      
+      document.addEventListener("keydown", keyDownHandler, false);
+      document.addEventListener("keyup", keyUpHandler, false);
+      document.addEventListener("mousemove", mouseMoveHandler, false);
+      tryAgainButton.addEventListener("click", tryAgain);
+      levelTwo.addEventListener("click", goLevelTwo);
+      levelThree.addEventListener("click", goLevelThree);
+      startOver.addEventListener("click", startAgain)
+      allSoundEffects.addEventListener("click", toggleSoundEffects);
+      allBackgroundMusic.addEventListener("click", toggleBackgroundMusic);
+      asteroidProjectile.addEventListener("click", selectProjectile);
+      starProjectile.addEventListener("click", selectProjectile);
+      heartProjectile.addEventListener("click", selectProjectile);
+      carrotProjectile.addEventListener("click", selectProjectile);
+      
+      projectile.src = "./images/icons8-asteroid-32.png";
+      setUfos();
+
+      function toggleSoundEffects(event) {
+        let on = `M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z`;
+        let off = `M13 2h-2v2H9v2H7v2H3v8h4v2h2v2h2v2h2V2zM9 18v-2H7v-2H5v-4h2V8h2V6h2v12H9zm10-6.777h-2v-2h-2v2h2v2h-2v2h2v-2h2v2h2v-2h-2v-2zm0 0h2v-2h-2v2z`;
+        
+        if (bounceAudio.muted === false) {
+          allSoundEffects.setAttribute("d", off);
+          bounceAudio.muted = true;
+          collisionAudio.muted = true;
+          buttonClickAudio.muted = true;
+        }
+        else if (bounceAudio.muted === true) {
+          allSoundEffects.setAttribute("d", on);
+          bounceAudio.muted = false;
+          collisionAudio.muted = false;
+          buttonClickAudio.muted = false;
+        }
+      }
+
+      function toggleBackgroundMusic(event) {
+        let on ="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z";
+        let off ="m2 5.27 1.28-1.27 16.72 16.72-1.27 1.28-9.73-9.73v5.23a3.5 3.5 0 0 1 -3.5 3.5 3.5 3.5 0 0 1 -3.5-3.5 3.5 3.5 0 0 1 3.5-3.5c.54 0 1.05.12 1.5.34v-4.07zm19-2.27v12.5c0 1-.43 1.92-1.12 2.56l-4.94-4.94c.64-.69 1.56-1.12 2.56-1.12.54 0 1.05.12 1.5.34v-5.87l-8.83 1.88-2.51-2.51z";
+        
+        if (mainAudio.muted === false) {
+          allBackgroundMusic.setAttribute("d", off);
+          mainAudio.muted = true;
+          losingScreenAudio.muted = true;
+          winningScreenAudio.muted = true;
+        }
+        else if (mainAudio.muted === true) {
+          allBackgroundMusic.setAttribute("d", on);
+          mainAudio.muted = false;
+          losingScreenAudio.muted = false;
+          winningScreenAudio.muted = false;
+        }
+      }
+      
+      function selectProjectile(event) {
+        if (event.target === switchProjectile || switchProjectile === undefined) {
+          event.target.classList.toggle("projectile-selection");
+        }
+        else if (switchProjectile !== event.target){
+          event.target.classList.toggle("projectile-selection");
+          switchProjectile.classList.remove("projectile-selection");
+        }
+        switchProjectile = event.target;
+        projectile.src = event.target.previousElementSibling.src;
+      }
+
+      function keyDownHandler(event) {
+        if (event.key === "Right" || event.key === "ArrowRight") {
+          rightArrowPressed = true;
+        } else if (event.key === "Left" || event.key === "ArrowLeft") {
+          leftArrowPressed = true;
+        }
+      }
+
+      function keyUpHandler(event) {
+        if (event.key === "Right" || event.key === "ArrowRight") {
+          rightArrowPressed = false;
+        } else if (event.key === "Left" || event.key === "ArrowLeft") {
+          leftArrowPressed = false;
+        }
+      }
+
+      function mouseMoveHandler(event) {
+        const mousePositionX = event.clientX-((window.innerWidth-canvas.width)/2);
+        if (
+          mousePositionX > characterWidth / 2 &&
+          mousePositionX < canvas.width - characterWidth / 2
+        ) {
+          characterPositionX = mousePositionX - characterWidth/2;
+        }
+      }
+
+      function startAgain(event) {
+        tryAgainButton.classList.add("hide-button");
+        totalScore = 0;
+        winningScreenAudio.muted = true;
+        projectileSpeedX = 4;
+        projectileSpeedY = -4;
+        levelCount = 1;
+        ufoRowCount = 2;
+        ufoColumnCount = 7;
+        ufoPadding = 35;
+        ufoOffsetLeft = 60;
+        tryAgain();
+      }
+
+      //rename to redraw
+
+      function tryAgain(event) {
+        buttonClickAudio.volume = .2;
+        buttonClickAudio.play();
+        setTimeout(restartGame, 1000);  
+      }
+
+      function restartGame() {
+        losingScreenAudio.muted = true;
+        mainAudio.load();
+        mainAudio.play();
+        resultContainer.classList.toggle("result-screen");
+        startOver.classList.add("hide-button");
+        levelScore = 0; 
+        lives = 3;
+        projectilePositionY = canvas.height - projectileRadius;
+        projectilePositionX = characterPositionX;
+        setUfos();
+        draw();
+      }
+
+      function goLevelTwo(event) {
+        winningScreenAudio.muted = true;
+        levelCount = 2;
+        projectileSpeedX = 6;
+        projectileSpeedY = -6;
+        ufoRowCount = 3;
+        ufoColumnCount = 7;
+        tryAgain();
+      }
+   
+
+      function goLevelThree(event) {
+        winningScreenAudio.muted = true;
+        levelCount = 3;
+        projectileSpeedX = 10;
+        projectileSpeedY = -10;
+        ufoRowCount = 3;
+        ufoColumnCount = 5;
+        ufoOffsetLeft = 100;
+        ufoPadding = 60;
+        tryAgain();
+      }
+
+      function collisionDetection() {
+        for (let columns = 0; columns < ufoColumnCount; columns++) {
+          for (let rows = 0; rows < ufoRowCount; rows++) {
+            const ufo = ufos[columns][rows];
+            if (ufo.status === 1) {
+              if (
+                projectilePositionX > ufo.x &&
+                projectilePositionX < ufo.x + ufoWidth &&
+                projectilePositionY > ufo.y &&
+                projectilePositionY < ufo.y + ufoHeight
+              ) {
+                collisionAudio.volume = .2;
+                collisionAudio.playbackRate = 3; 
+                collisionAudio.play();
+                projectileSpeedY = -projectileSpeedY;
+                ufo.status = 0;
+                levelScore++;
+              }
+
+              if (levelScore >= (ufoRowCount * ufoColumnCount)) {
+                  if (levelScore=== 14) {
+                    totalScore = levelScore;
+                    mainAudio.pause();
+                    winningScreenAudio.muted = false;
+                    winningScreenAudio.play();
+                    results.innerHTML = "Dont let it get to your head";
+                    points.innerHTML = `Score: ${levelScore}`;
+                    tryAgainButton.classList.add("hide-button");
+                    levelTwo.classList.remove("hide-button");
+                  }
+                  else if (levelScore + totalScore === 35) {
+                    totalScore += levelScore;
+                    mainAudio.pause();
+                    winningScreenAudio.muted = false;
+                    winningScreenAudio.play();
+                    results.innerHTML = "It wont be so easy next time";
+                    points.innerHTML = `Score: ${totalScore}`;
+                    levelTwo.classList.add("hide-button");
+                    tryAgainButton.classList.add("hide-button");
+                    levelThree.classList.remove("hide-button");
+                  }
+                  else if (levelScore + totalScore === 50) {
+                    totalScore += levelScore;
+                    mainAudio.pause();
+                    winningScreenAudio.muted = false;
+                    winningScreenAudio.play();
+                    results.innerHTML = "ok......fine";
+                    points.innerHTML = `Score: ${totalScore}`;
+                    levelThree.classList.add("hide-button");
+                    startOver.classList.remove("hide-button");
+                    tryAgainButton.classList.add("hide-button");
+                  }
+                  resultContainer.classList.toggle("result-screen");
+                  return false;
+                }
+            }
+          }
+        }
+      }
+      
+      function drawProjectile() {
+        ctx.beginPath();
+        ctx.drawImage(projectile, projectilePositionX, projectilePositionY, 30, 30);
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawCharacter() {
+        let spaceShip = new Image();
+        spaceShip.src = "./images/icons8-spaceship-64 (1).png";
+        ctx.beginPath();
+        ctx.drawImage(spaceShip, characterPositionX, canvas.height - characterHeight, 80, 80);
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawUfos() {
+        for (let columns = 0; columns < ufoColumnCount; columns++) {
+          for (let rows = 0; rows < ufoRowCount; rows++) {
+            if (ufos[columns][rows].status === 1) {
+              const ufoPositionX = columns * (ufoWidth + ufoPadding) + ufoOffsetLeft;
+              const ufoPositionY = rows * (ufoHeight + ufoPadding) + ufoOffsetTop;
+              ufos[columns][rows].x = ufoPositionX;
+              ufos[columns][rows].y = ufoPositionY;
+              let ufoIcon = new Image();
+              ufoIcon.src = "./images/icons8-ufo-67 (1).png";
+              ctx.beginPath();
+              ctx.drawImage(ufoIcon, ufoPositionX, ufoPositionY, 70, 60);
+              ctx.fillStyle = "#0095DD";
+              ctx.fill();
+              ctx.closePath();
+            }
+          }
+        }
+      }
+
+      function setUfos() {
+       for (let columns = 0; columns < ufoColumnCount; columns++) {
+        ufos[columns] = [];
+        for (let rows = 0; rows < ufoRowCount; rows++) {
+          ufos[columns][rows] = { x: 0, y: 0, status: 1 };
+        }
+      } 
+      }
+
+      function drawScore() {
+        ctx.font = "22px scoreFont";
+        ctx.fillStyle = "rgb(157, 232, 255)";
+        ctx.fillText(`Score: ${levelScore+totalScore}`, 18, 25);
+      }
+
+      function drawLevel() {
+        ctx.font = "22px scoreFont";
+        ctx.fillStyle = "rgb(157, 232, 255)";
+        ctx.fillText(`Level`+ levelCount, canvas.width/2-28, 25);
+      }
+
+      function drawLives() {
+        ctx.font = "22px scoreFont";
+        ctx.fillStyle = "rgb(157, 232, 255)";
+        ctx.fillText(`Lives: ${lives}`, canvas.width - 95, 25);
+      }
+
+      function draw() {
+        mainAudio.volume = .5;
+        let newImage = new Image();
+        newImage.src = "./images/spacebackground.jpg";
+        newImage.onload = () => {
+          ctx.drawImage(newImage, 0, 0, 1200, 650);
+        }
+        
+        drawUfos();
+        drawProjectile();
+        drawCharacter();
+        drawScore();
+        drawLevel();
+        drawLives();
+
+        if (collisionDetection() === false) {
+          return;
+        }
+
+        if (projectilePositionX + projectileSpeedX > canvas.width - projectileRadius || projectilePositionX + projectileSpeedX < projectileRadius) {
+          projectileSpeedX = -projectileSpeedX;
+        }
+        if (projectilePositionY + projectileSpeedY < projectileRadius) {
+          projectileSpeedY = -projectileSpeedY;
+        }
+    
+        else if (projectilePositionY + projectileSpeedY > canvas.height - projectileRadius) {
+          if (projectilePositionX+projectileRadius > characterPositionX && projectilePositionX < characterPositionX + characterWidth) {
+            bounceAudio.playbackRate = 4;
+            bounceAudio.play();
+            projectileSpeedY = -projectileSpeedY;
+          } 
+          else {
+            lives--;  
+            if (lives >=0) {
+              if (lives === 0) {
+              mainAudio.pause();
+              losingScreenAudio.muted = false;
+              losingScreenAudio.volume = .15;
+              losingScreenAudio.play();
+              results.innerHTML = "Just surrender already";
+              points.innerHTML = `Score: ${levelScore+totalScore}`;
+              resultContainer.classList.toggle("result-screen");
+              tryAgainButton.classList.remove("hide-button");
+              levelTwo.classList.add("hide-button");
+              levelThree.classList.add("hide-button");
+              return;
+            } 
+            if (1 < lives <= 3) {
+              projectilePositionX = characterPositionX;
+              projectilePositionY = canvas.height - 30;
+              projectileSpeedX = Math.abs(projectileSpeedX);
+              projectileSpeedY = -Math.abs(projectileSpeedY);
+            }
+            }
+          }
+        }
+        
+        if (rightArrowPressed && characterPositionX < canvas.width - characterWidth) {
+          characterPositionX = Math.min(characterPositionX + 7, canvas.width - characterWidth);
+        } 
+        else if (leftArrowPressed && characterPositionX > 0) {
+          characterPositionX = Math.max(characterPositionX - 7, 0);
+        }
+
+        projectilePositionX += projectileSpeedX;
+        projectilePositionY += projectileSpeedY;
+        requestAnimationFrame(draw);
+      }
+
+      draw();

@@ -3,287 +3,94 @@
   <head>
     <meta charset="utf-8" />
     <title>Destroy The UFOs</title>
-    <style>
-      * {
-        cursor: default;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        background-image: url("images/planetbackground.jpg");
-      }
-
-      @font-face {
-        font-family: titleFont;
-        src: url(fonts/power_pixel-7.ttf);
-      }
-
-      @font-face {
-        font-family: scoreFont;
-        src: url(fonts/ARCADECLASSIC.TTF);
-      }
-
-      h1 {
-        color: white;
-        cursor: default;
-        font-family: titleFont;
-        font-size: 70px;
-        padding-top: 50px;
-        position: relative;
-        text-align: center;
-      }
-
-      #container {
-        display: grid;
-        grid-gap: .7%;
-        grid-template-columns: 1fr auto 1fr;
-      }
-
-      #game-container {
-        position: relative;
-      }
-
-      canvas {
-        border-radius: 15px;
-        display: block;
-        margin: 5% auto;
-        z-index: 0;
-      }
-
-      #resultContainer {
-        animation: slowlyAppear 2s, bounceResults 3s linear infinite;
-        height: 500px;
-        left: 0;
-        margin-left: auto;
-        margin-right: auto;
-        position: absolute; 
-        right: 0;
-        width: 800px;
-        z-index: 1;
-      }
-
-      .resultScreen {
-        visibility: hidden;
-      }
-
-      @keyframes slowlyAppear {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 100;
-        }
-      }
-
-      @keyframes bounceResults {
-        0% {top: 6%;}
-        50% {top: 0%;}
-        100% {top: 6%}
-      }
-
-      #results {
-        color: white;
-        font-family: scoreFont;
-        font-size: 80px;
-        padding-top: 10%;
-        text-align: center;
-      }
-
-      #points {
-        color: white;
-        font-family: scoreFont;
-        font-size: 30px;
-        padding-top: 10%;
-        text-align: center;
-      }
-
-      .button {
-        background-color: transparent;
-        border: none;
-        color: rgb(104, 104, 104);
-        cursor: pointer;
-        position: absolute;
-        /* display: block; */
-        font-family: scoreFont;
-        font-size: 50px;
-        margin: 10% auto;
-        right: 0;
-        left: 0;
-      }
-
-      .button:hover {
-        color: rgb(157, 232, 255);
-      }
-
-      #selection-container {
-        color: rgb(255, 255, 255);
-        font-family: scoreFont;
-        font-size: 15px;
-        height: 600px;
-        padding-left: 18%;
-        padding-top: 110px;
-        text-align: center;
-        width: 65%;
-      }
-
-      #mission-container {
-        background-color: rgba(135, 155, 168, 0.37);
-        border-color:rgb(157, 232, 255);
-        border-radius: 25px;
-        border-style: double;
-        color: rgb(238, 238, 238);
-        display: flex;
-        flex-direction: column;
-        font-family: scoreFont;
-        font-size: 20px;
-        margin: 20% 12% 30% 10%;
-        padding: 15px;
-      }
-
-      .sidebarTitle {
-        font-size: 30px;
-        padding-bottom: 5%;
-      }
-
-      .missionLogTitle {
-        align-items: center;
-        display: flex;
-        font-size: 30px;
-        justify-content: space-between;
-        padding-bottom: 2%;
-      }
-
-      .missionLogTitle span{
-        color: rgb(157, 232, 255);
-        font-size: 17px;
-      }
-
-      #missionDescription {
-        padding-top: 3%;
-      }
-
-      .projectileContainer {
-        column-gap: 4%;
-        display: grid;
-        grid-template-columns: 35px auto;
-        padding: 4% 14%;
-      }
-
-      .projectileContainer p:hover {
-        color:rgb(135, 208, 233);
-      }
-
-      #soundIcons {
-        column-gap: 5%;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        padding-bottom: 10%;
-      }
-
-      .projectileSelection {
-        color:rgb(135, 208, 233);
-      }
-
-      .hideButton {
-        visibility: hidden;
-      }
-
-    </style>
+    <link rel="stylesheet" href= "./style.css"/>
   </head>
   <body>
-    <audio id="mainAudio" autoplay loop >
+    <audio id="main-audio" autoplay loop >
       <source src="./audio/suits-you-69233.mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
 
-    <audio id="buttonClickAudio" >
+    <audio id="button-click-audio" >
       <source src="./audio/message-incoming-132126.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
-    <audio id="collisionAudio">
+    <audio id="collision-audio">
       <source src="./audio/message-incoming-132126.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
-    <audio id="losingScreenAudio" >
+    <audio id="losing-screen-audio" >
       <source src="./audio/8-bit-video-game-lose-sound-version-1-145828.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
-    <audio id="winningScreenAudio" >
+    <audio id="winning-screen-audio" >
       <source src="./audio/winsquare-6993.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
-    <audio id="bounceAudio" >
+    <audio id="bounce-audio" >
       <source src="./audio/jump_c_02-102843 (2).mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
     <h1>Destroy The UFOs</h1>
 
-    <div id="container">
+    <div id="main-container">
       <nav id="selection-container">
         <div id="sound-options">
-          <p class="sidebarTitle">Sound Options</p>
-          <div id="soundIcons">
+          <p class="sidebar-title">Sound Options</p>
+          <div id="sound-icons">
             <svg  width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path id="soundEffects" d="M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z" fill="currentColor"/>
+              <path id="sound-effects" d="M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z" fill="currentColor"/>
             </svg>
-            <!-- <svg id="soundEffectsOff" class="audioOff" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" display="none">
-              <path d="M13 2h-2v2H9v2H7v2H3v8h4v2h2v2h2v2h2V2zM9 18v-2H7v-2H5v-4h2V8h2V6h2v12H9zm10-6.777h-2v-2h-2v2h2v2h-2v2h2v-2h2v2h2v-2h-2v-2zm0 0h2v-2h-2v2z" fill="currentColor"/>
-            </svg> -->
             <svg  height="20" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path id="backgroundMusic" d="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z"/>
+              <path id="background-music" d="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z"/>
             </svg>
-            <!-- <svg id="backgroundMusicOff" height="24" fill="white" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" display="none">
-              <path d="m2 5.27 1.28-1.27 16.72 16.72-1.27 1.28-9.73-9.73v5.23a3.5 3.5 0 0 1 -3.5 3.5 3.5 3.5 0 0 1 -3.5-3.5 3.5 3.5 0 0 1 3.5-3.5c.54 0 1.05.12 1.5.34v-4.07zm19-2.27v12.5c0 1-.43 1.92-1.12 2.56l-4.94-4.94c.64-.69 1.56-1.12 2.56-1.12.54 0 1.05.12 1.5.34v-5.87l-8.83 1.88-2.51-2.51z"/>
-            </svg> -->
           </div>
         </div>
-        <div id="projectileOptions">
-          <p class="sidebarTitle">Pick Your Projectile!</p>
-          <div id="projectileIcons">
-            <div  class="projectileContainer">
+        <div id="projectile-options">
+          <p class="sidebar-title">Pick Your Projectile!</p>
+          <div id="projectile-icons">
+            <div class="projectile-container">
               <img src="./images/icons8-asteroid-32.png"/>
-              <p id="asteroidProjectile">The default projectile. Don't ask how we got it.</p>
+              <p id="asteroid-projectile">The default projectile. Don't ask how we got it.</p>
             </div>
-            <div  class="projectileContainer">
+            <div  class="projectile-container">
               <img src="./images/icons8-pixel-star-30.png" />
-              <p id="starProjectile">Who knew a big ball of gas would look so cute!</p>
+              <p id="star-projectile">Who knew a big ball of gas would look so cute!</p>
             </div>
-            <div  class="projectileContainer">
+            <div  class="projectile-container">
               <img src="./images/icons8-pixel-heart-48 (2).png" height="32px"/>
-              <p id="heartProjectile">It's not mean if we have good intentions ... right?</p>
+              <p id="heart-projectile">It's not mean if we have good intentions ... right?</p>
             </div>
-            <div  class="projectileContainer">
+            <div  class="projectile-container">
               <img src="./images/39a0467a264a285.png"  height="32px"/>
-              <p id="carrotProjectile">Because we actually don't like these all that much</p>
+              <p id="carrot-projectile">Because we actually don't like these all that much</p>
             </div>
           </div>
         </div>
       </nav>
 
       <main id="game-container">
-        <canvas id="myCanvas" width="800" height="550"></canvas>
-        <div id="resultContainer" class="resultScreen">
+        <canvas id="my-canvas" width="800" height="550"></canvas>
+        <div id="result-container" class="result-screen">
           <p id="results"></p>
           <p id="points"></p>
-          <button id="tryAgainButton" class="button">Try Again</button>
-          <button id="levelTwo" class="hideButton button">Level 2</button>
-          <button id="levelThree" class="hideButton button">Level 3</button>
-          <button id = "scoreboardButton" class="hideButton button">Go To Scoreboard</button>
-          <button id = "startOver" class="hideButton button">Play Again</button>
+          <button id="try-again-button" class="button">Try Again</button>
+          <button id="level-two" class="hide-button button">Level 2</button>
+          <button id="level-three" class="hide-button button">Level 3</button>
+          <button id ="scoreboard-button" class="hide-button button">Go To Scoreboard</button>
+          <button id ="start-from-beginning" class="hide-button button">Play Again</button>
         </div>
       </main>
 
       <nav id="mission-container">
-        <p class="missionLogTitle">Mission Log <span>Year: 2093458320</span></p>
+        <p class="mission-log-title">Mission Log <span>Year: 2093458320</span></p>
         <hr>
-        <div id="missionDescription">
+        <div id="mission-description">
           <p>
             It's finally come.
           </p> 
@@ -300,406 +107,12 @@
           <br>
           <p>
             Hit the UFO's with your
-            asteroid to eliminate the hoard of aliens one by one... or don't. It's
+            asteroid to eliminate the hoards of surprisingly snarky aliens one by one... or don't. It's
             only the fate of the world hanging in the balance.
           </p>
         </div>
       </nav>
     </div>
-
-    <script>
-      const canvas = document.getElementById("myCanvas");
-      const ctx = canvas.getContext("2d");
-      let targetStorage;
-      let score = 0;
-      let lives = 3;
-      let dx = 4;
-      let dy = -4;
-      let x = canvas.width / 2;
-      let y = canvas.height - 55;
-      const paddleHeight = 70;
-      const paddleWidth = 80;
-      let paddleX = (canvas.width - paddleWidth)/ 2;
-      let rightPressed = false;
-      let leftPressed = false;
-      const ballRadius = 15;
-      let brickRowCount = 2;
-      let brickColumnCount = 8;
-      const brickWidth = 70;
-      const brickHeight = 30;
-      let brickPadding = 30;
-      let brickOffsetTop = 30;
-      let brickOffsetLeft = 20;
-      const bricks = [];
-      const resultContainer = document.getElementById("resultContainer");
-      const results = document.getElementById("results");
-      const points = document.getElementById("points");
-      const tryAgainButton = document.getElementById("tryAgainButton");
-      const startOver = document.getElementById("startOver");
-      const mainAudio = document.getElementById("mainAudio");
-      const bounceAudio = document.getElementById("bounceAudio");
-      const collisionAudio = document.getElementById("collisionAudio");
-      const losingScreenAudio = document.getElementById("losingScreenAudio");
-      const winningScreenAudio = document.getElementById("winningScreenAudio");
-      const soundEffects = document.getElementById("soundEffects");
-      const backgroundMusic = document.getElementById("backgroundMusic");
-      const buttonClickAudio = document.getElementById("buttonClickAudio");
-      const asteroidProjectile = document.getElementById("asteroidProjectile");
-      const starProjectile = document.getElementById("starProjectile");
-      const heartProjectile = document.getElementById("heartProjectile");
-      const carrotProjectile = document.getElementById("carrotProjectile");
-      const levelTwo = document.getElementById("levelTwo");
-      const levelThree = document.getElementById("levelThree");
-      const projectile = new Image();
-      projectile.src = "images/icons8-asteroid-32.png";
-
-      document.addEventListener("keydown", keyDownHandler, false);
-      document.addEventListener("keyup", keyUpHandler, false);
-      document.addEventListener("mousemove", mouseMoveHandler, false);
-      tryAgainButton.addEventListener("click", tryAgain);
-      levelTwo.addEventListener("click", goLevelTwo);
-      levelThree.addEventListener("click", goLevelThree);
-      startOver.addEventListener("click", startAgain)
-      soundEffects.addEventListener("click", toggleSoundEffects);
-      backgroundMusic.addEventListener("click", toggleBackgroundMusic);
-      asteroidProjectile.addEventListener("click", selectProjectile);
-      starProjectile.addEventListener("click", selectProjectile);
-      heartProjectile.addEventListener("click", selectProjectile);
-      carrotProjectile.addEventListener("click", selectProjectile);
-      
-      setBricks();
-
-      function setBricks() {
-       for (let c = 0; c < brickColumnCount; c++) {
-        bricks[c] = [];
-        for (let r = 0; r < brickRowCount; r++) {
-          bricks[c][r] = { x: 0, y: 0, status: 1 };
-        }
-      } 
-      }
-
-      function toggleSoundEffects(event) {
-        let on = `M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z`;
-        let off = `M13 2h-2v2H9v2H7v2H3v8h4v2h2v2h2v2h2V2zM9 18v-2H7v-2H5v-4h2V8h2V6h2v12H9zm10-6.777h-2v-2h-2v2h2v2h-2v2h2v-2h2v2h2v-2h-2v-2zm0 0h2v-2h-2v2z`;
-        
-        if (bounceAudio.muted === false) {
-          soundEffects.setAttribute("d", off);
-          bounceAudio.muted = true;
-          collisionAudio.muted = true;
-          buttonClickAudio.muted = true;
-        }
-        else if (bounceAudio.muted === true) {
-          soundEffects.setAttribute("d", on);
-          bounceAudio.muted = false;
-          collisionAudio.muted = false;
-          buttonClickAudio.muted = false;
-        }
-      }
-
-      function toggleBackgroundMusic(event) {
-        let on ="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z";
-        let off ="m2 5.27 1.28-1.27 16.72 16.72-1.27 1.28-9.73-9.73v5.23a3.5 3.5 0 0 1 -3.5 3.5 3.5 3.5 0 0 1 -3.5-3.5 3.5 3.5 0 0 1 3.5-3.5c.54 0 1.05.12 1.5.34v-4.07zm19-2.27v12.5c0 1-.43 1.92-1.12 2.56l-4.94-4.94c.64-.69 1.56-1.12 2.56-1.12.54 0 1.05.12 1.5.34v-5.87l-8.83 1.88-2.51-2.51z";
-        
-        if (mainAudio.muted === false) {
-          backgroundMusic.setAttribute("d", off);
-          mainAudio.muted = true;
-          losingScreenAudio.muted = true;
-          winningScreenAudio.muted = true;
-        }
-        else if (mainAudio.muted === true) {
-          backgroundMusic.setAttribute("d", on);
-          mainAudio.muted = false;
-          losingScreenAudio.muted = false;
-          winningScreenAudio.muted = false;
-        }
-      }
-      
-      function selectProjectile(event) {
-        if (event.target === targetStorage || targetStorage === undefined) {
-          event.target.classList.toggle("projectileSelection");
-        }
-        else if (targetStorage !== event.target){
-          event.target.classList.toggle("projectileSelection");
-          targetStorage.classList.remove("projectileSelection");
-        }
-        targetStorage = event.target;
-        projectile.src = event.target.previousElementSibling.src;
-      }
-
-      function keyDownHandler(event) {
-        if (event.key === "Right" || event.key === "ArrowRight") {
-          rightPressed = true;
-        } else if (event.key === "Left" || event.key === "ArrowLeft") {
-          leftPressed = true;
-        }
-      }
-
-      function keyUpHandler(event) {
-        if (event.key === "Right" || event.key === "ArrowRight") {
-          rightPressed = false;
-        } else if (event.key === "Left" || event.key === "ArrowLeft") {
-          leftPressed = false;
-        }
-      }
-
-      function mouseMoveHandler(event) {
-        const relativeX = event.clientX-((window.innerWidth-canvas.width)/2);
-        if (
-          relativeX > paddleWidth / 2 &&
-          relativeX < canvas.width - paddleWidth / 2
-        ) {
-          paddleX = relativeX - paddleWidth/2;
-        }
-      }
-
-      function startAgain(event) {
-        startOver.classList.add("hideButton");
-        winningScreenAudio.muted = false;
-        mainAudio.load();
-        mainAudio.play();
-        resultContainer.classList.toggle("resultScreen");
-        score = 0;
-        lives = 3;
-        dx = 4;
-        dy = -4;
-        brickRowCount = 2;
-        brickColumnCount = 7;
-        brickPadding = 30;
-        setBricks();
-        draw();
-      }
-
-      function tryAgain(event) {
-          buttonClickAudio.volume = .2;
-          buttonClickAudio.play();
-          setTimeout(restartGame, 1000);  
-      }
-
-      function restartGame() {
-        // buttonClickAudio.play();
-        mainAudio.load();
-        mainAudio.play();
-        resultContainer.classList.toggle("resultScreen");
-        losingScreenAudio.muted = true;
-        score = 0;
-        lives = 3;
-        setBricks();
-        draw();
-      }
-
-      function goLevelTwo(event) {
-        
-        winningScreenAudio.muted = true;
-        mainAudio.load();
-        mainAudio.play();
-        resultContainer.classList.toggle("resultScreen");
-        x = canvas.width / 2;
-        y = canvas.height - 55;
-        score = 0;
-        lives = 3;
-        dx = 6;
-        dy = -6;
-        brickRowCount = 3;
-        brickColumnCount = 7;
-        brickPadding = 40;
-        setBricks();
-        draw();
-      }
-   
-
-      function goLevelThree(event) {
-        winningScreenAudio.muted = true;
-        mainAudio.load();
-        mainAudio.play();
-        resultContainer.classList.toggle("resultScreen");
-        x = canvas.width / 2;
-        y = canvas.height - 55;
-        score = 0;
-        lives = 3;
-        dx = 7;
-        dy = -7;
-        brickRowCount = 3;
-        brickColumnCount = 5;
-        brickPadding = 60;
-        setBricks();
-        draw();
-      }
-
-      function collisionDetection() {
-        for (let c = 0; c < brickColumnCount; c++) {
-          for (let r = 0; r < brickRowCount; r++) {
-            const b = bricks[c][r];
-            if (b.status === 1) {
-              if (
-                x > b.x &&
-                x < b.x + brickWidth &&
-                y > b.y &&
-                y < b.y + brickHeight
-              ) {
-                collisionAudio.volume = .2;
-                collisionAudio.playbackRate = 3; 
-                collisionAudio.play();
-                dy = -dy;
-                b.status = 0;
-                score++;
-              }
-              
-              if (score === brickRowCount * brickColumnCount) {
-                  if (score === 16) {
-                    document.getElementById("mainAudio").pause();
-                    winningScreenAudio.muted = false;
-                    winningScreenAudio.play();
-                    results.innerHTML = "Dont let it get to your head";
-                    points.innerHTML = `Score: ${score}`;
-                    tryAgainButton.classList.add("hideButton");
-                    levelTwo.classList.remove("hideButton");
-                  }
-                  else if (score === 21) {
-                    document.getElementById("mainAudio").pause();
-                    winningScreenAudio.muted = false;
-                    winningScreenAudio.play();
-                    points.innerHTML = `Total Score: ${score+14}`;
-                    levelTwo.classList.add("hideButton");
-                    tryAgainButton.classList.add("hideButton");
-                    levelThree.classList.remove("hideButton");
-                  }
-                  else if (score === 15) {
-                    document.getElementById("mainAudio").pause();
-                    winningScreenAudio.muted = false;
-                    winningScreenAudio.play();
-                    points.innerHTML = `Total Score: ${score+14+15}`;
-                    levelTwo.classList.add("hideButton");
-                    levelThree.classList.add("hideButton")
-                    startOver.classList.remove("hideButton");
-                  }
-                  resultContainer.classList.toggle("resultScreen");
-                  return false;
-                }
-            }
-          }
-        }
-      }
-      
-
-      function drawBall() {
-        ctx.beginPath();
-        ctx.drawImage(projectile, x, y, 30, 30);
-        ctx.fill();
-        ctx.closePath();
-      }
-
-      function drawPaddle() {
-        let spaceShip = new Image();
-        spaceShip.src = "images/icons8-spaceship-64 (1).png";
-        ctx.beginPath();
-        ctx.drawImage(spaceShip, paddleX, canvas.height - paddleHeight, 80, 80);
-        ctx.fill();
-        ctx.closePath();
-      }
-
-      function drawBricks() {
-        for (let c = 0; c < brickColumnCount; c++) {
-          for (let r = 0; r < brickRowCount; r++) {
-            if (bricks[c][r].status === 1) {
-              const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-              const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-              bricks[c][r].x = brickX;
-              bricks[c][r].y = brickY;
-              let ufo = new Image();
-              ufo.src = "images/icons8-ufo-67 (1).png";
-              ctx.beginPath();
-              ctx.drawImage(ufo, brickX, brickY, 70, 60);
-              ctx.fillStyle = "#0095DD";
-              ctx.fill();
-              ctx.closePath();
-            }
-          }
-        }
-      }
-
-      function drawScore() {
-        ctx.font = "22px scoreFont";
-        ctx.fillStyle = "rgb(157, 232, 255)";
-        ctx.fillText(`Score: ${score}`, 18, 25);
-      }
-
-      function drawLives() {
-        ctx.font = "22px scoreFont";
-        ctx.fillStyle = "rgb(157, 232, 255)";
-        ctx.fillText(`Lives: ${lives}`, canvas.width - 95, 25);
-      }
-
-      function draw() {
-        mainAudio.volume = .5;
-        let newImage = new Image();
-        newImage.src = "images/spacebackground.jpg";
-        newImage.onload = () => {
-          ctx.drawImage(newImage, 0, 0, 1200, 650);
-        }
-
-        drawBricks();
-        drawBall();
-        drawPaddle();
-        drawScore();
-        drawLives();
-
-        if (collisionDetection() === false) {
-          return;
-        }
-
-        if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-          dx = -dx;
-        }
-        if (y + dy < ballRadius) {
-          dy = -dy;
-        } 
-        else if (y + dy > canvas.height - ballRadius) {
-          if (x > paddleX && x < paddleX + paddleWidth) {
-            bounceAudio.playbackRate = 4;
-            bounceAudio.play();
-            dy = -dy;
-            
-          } 
-          else {
-            lives--;  
-            if (lives >=0) {
-              if (lives === 0) {
-              document.getElementById("mainAudio").pause();
-              losingScreenAudio.muted = false;
-              losingScreenAudio.volume = .15;
-              losingScreenAudio.play();
-              results.innerHTML = "Dont worry... I wont tell anyone";
-              points.innerHTML = `Score: ${score}`;
-              resultContainer.classList.toggle("resultScreen");
-              tryAgainButton.classList.remove("hideButton");
-              levelTwo.classList.add("hideButton");
-              levelThree.classList.add("hideButton");
-              return;
-            } 
-            if (1 < lives <= 3) {
-              x = canvas.width / 2;
-              y = canvas.height - 30;
-              dx = Math.abs(dx);
-              dy = -Math.abs(dy);
-              paddleX = (canvas.width - paddleWidth) / 2;
-            }
-            }
-          }
-        }
-        
-        if (rightPressed && paddleX < canvas.width - paddleWidth) {
-          paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
-        } 
-        else if (leftPressed && paddleX > 0) {
-          paddleX = Math.max(paddleX - 7, 0);
-        }
-
-        x += dx;
-        y += dy;
-        requestAnimationFrame(draw);
-      }
-
-      draw();
-    </script>
+    <script src="./main.js"></script>
   </body>
 </html>

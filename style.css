@@ -1,0 +1,184 @@
+@font-face {
+    font-family: titleFont;
+    src: url(fonts/power_pixel-7.ttf);
+  }
+
+  @font-face {
+    font-family: scoreFont;
+    src: url(fonts/ARCADECLASSIC.TTF);
+  }
+
+  * {
+    cursor: default;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-image: url("images/planetbackground.jpg");
+  }
+
+  h1 {
+    color: white;
+    cursor: default;
+    font-family: titleFont;
+    font-size: 70px;
+    padding-top: 50px;
+    position: relative;
+    text-align: center;
+  }
+
+  #main-container {
+    display: grid;
+    grid-gap: .7%;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  #game-container {
+    position: relative;
+  }
+
+  canvas {
+    border-radius: 15px;
+    display: block;
+    margin: 5% auto;
+    z-index: 0;
+  }
+
+  #result-container {
+    animation: slowly-appear 2s, bounce-results 3s linear infinite;
+    height: 500px;
+    left: 0;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute; 
+    right: 0;
+    width: 800px;
+    z-index: 1;
+  }
+
+  .result-screen {
+    visibility: hidden;
+  }
+
+  #results {
+    color: white;
+    font-family: scoreFont;
+    font-size: 80px;
+    padding-top: 10%;
+    text-align: center;
+  }
+
+  #points {
+    color: white;
+    font-family: scoreFont;
+    font-size: 30px;
+    padding-top: 10%;
+    text-align: center;
+  }
+
+  .button {
+    background-color: transparent;
+    border: none;
+    color: rgb(104, 104, 104);
+    cursor: pointer;
+    position: absolute;
+    font-family: scoreFont;
+    font-size: 50px;
+    margin: 10% auto;
+    right: 0;
+    left: 0;
+  }
+
+  .button:hover {
+    color: rgb(157, 232, 255);
+  }
+
+  #selection-container {
+    color: rgb(255, 255, 255);
+    font-family: scoreFont;
+    font-size: 15px;
+    height: 600px;
+    padding-left: 18%;
+    padding-top: 110px;
+    text-align: center;
+    width: 65%;
+  }
+
+  #mission-container {
+    background-color: rgba(135, 155, 168, 0.37);
+    border-color:rgb(157, 232, 255);
+    border-radius: 25px;
+    border-style: double;
+    color: rgb(238, 238, 238);
+    display: flex;
+    flex-direction: column;
+    font-family: scoreFont;
+    font-size: 20px;
+    margin: 20% 12% 30% 10%;
+    padding: 15px;
+  }
+
+  .sidebar-title {
+    font-size: 30px;
+    padding-bottom: 5%;
+  }
+
+  .mission-log-title {
+    align-items: center;
+    display: flex;
+    font-size: 30px;
+    justify-content: space-between;
+    padding-bottom: 2%;
+  }
+
+  .mission-log-title span{
+    color: rgb(157, 232, 255);
+    font-size: 17px;
+  }
+
+  #mission-description {
+    padding-top: 3%;
+  }
+
+  .projectile-container {
+    column-gap: 4%;
+    display: grid;
+    grid-template-columns: 35px auto;
+    padding: 4% 14%;
+  }
+
+  .projectile-container p:hover {
+    color:rgb(135, 208, 233);
+  }
+
+  #sound-icons {
+    column-gap: 5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-bottom: 10%;
+  }
+
+  .projectile-selection {
+    color:rgb(135, 208, 233);
+  }
+
+  .hide-button {
+    visibility: hidden;
+  }
+
+  @keyframes slowly-appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 100;
+    }
+  }
+
+  @keyframes bounce-results {
+    0% {top: 6%;}
+    50% {top: 0%;}
+    100% {top: 6%}
+  }
