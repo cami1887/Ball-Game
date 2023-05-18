@@ -1,184 +1,273 @@
 @font-face {
-    font-family: titleFont;
-    src: url(fonts/power_pixel-7.ttf);
-  }
+  font-family: titleFont;
+  src: url(fonts/power_pixel-7.ttf);
+}
 
-  @font-face {
-    font-family: scoreFont;
-    src: url(fonts/ARCADECLASSIC.TTF);
-  }
+@font-face {
+  font-family: scoreFont;
+  src: url(fonts/ARCADECLASSIC.TTF);
+}
 
-  * {
-    cursor: default;
-    margin: 0;
-    padding: 0;
-  }
+* {
+  cursor: default;
+  margin: 0;
+  padding: 0;
+}
 
-  body {
-    background-image: url("images/planetbackground.jpg");
-  }
+html {
+  font-size: 100%;
+}
 
-  h1 {
-    color: white;
-    cursor: default;
-    font-family: titleFont;
-    font-size: 70px;
-    padding-top: 50px;
-    position: relative;
-    text-align: center;
-  }
+body {
+  background-image: url("images/planetbackground.jpg");
+}
 
-  #main-container {
-    display: grid;
-    grid-gap: .7%;
-    grid-template-columns: 1fr auto 1fr;
-  }
+h1 {
+  color: white;
+  cursor: default;
+  font: 5rem titleFont;
+  padding-top: 3%;
+  position: relative;
+  text-align: center;
+}
 
-  #game-container {
-    position: relative;
-  }
+#main-container {
+  display: grid;
+  grid-gap: .7%;
+  grid-template-columns: 1fr auto 1fr;
+}
 
-  canvas {
-    border-radius: 15px;
-    display: block;
-    margin: 5% auto;
-    z-index: 0;
-  }
+#game-container {
+  position: relative;
+}
 
-  #result-container {
-    animation: slowly-appear 2s, bounce-results 3s linear infinite;
-    height: 500px;
-    left: 0;
-    margin-left: auto;
-    margin-right: auto;
-    position: absolute; 
-    right: 0;
-    width: 800px;
-    z-index: 1;
-  }
+canvas {
+  border-radius: 15px;
+  display: block;
+  margin: 5% auto;
+  z-index: 0;
+}
 
-  .result-screen {
-    visibility: hidden;
-  }
+#result-container {
+  animation: slowly-appear 2s, bounce-results 3s linear infinite;
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute; 
+  right: 0;
+  z-index: 1;
+}
 
-  #results {
-    color: white;
-    font-family: scoreFont;
-    font-size: 80px;
-    padding-top: 10%;
-    text-align: center;
-  }
+.hide-screen {
+  visibility: hidden;
+}
 
-  #points {
-    color: white;
-    font-family: scoreFont;
-    font-size: 30px;
-    padding-top: 10%;
-    text-align: center;
-  }
+#results {
+  color: white;
+  font: 5rem scoreFont;
+  padding-top: 10%;
+  text-align: center;
+}
 
-  .button {
-    background-color: transparent;
-    border: none;
-    color: rgb(104, 104, 104);
-    cursor: pointer;
-    position: absolute;
-    font-family: scoreFont;
-    font-size: 50px;
-    margin: 10% auto;
-    right: 0;
-    left: 0;
-  }
+#points {
+  color: white;
+  font: 2rem scoreFont;
+  padding-top: 10%;
+  text-align: center;
+}
 
-  .button:hover {
-    color: rgb(157, 232, 255);
-  }
+.button {
+  background-color: transparent;
+  border: none;
+  color: rgb(104, 104, 104);
+  cursor: pointer;
+  font: 3.5rem scoreFont;
+  left: 0;
+  margin: 10% auto;
+  position: absolute;
+  right: 0;
+}
 
-  #selection-container {
-    color: rgb(255, 255, 255);
-    font-family: scoreFont;
-    font-size: 15px;
-    height: 600px;
-    padding-left: 18%;
-    padding-top: 110px;
-    text-align: center;
-    width: 65%;
-  }
+.button:hover, #leader-board:hover {
+  color: rgb(157, 232, 255);
+}
 
-  #mission-container {
-    background-color: rgba(135, 155, 168, 0.37);
-    border-color:rgb(157, 232, 255);
-    border-radius: 25px;
-    border-style: double;
-    color: rgb(238, 238, 238);
-    display: flex;
-    flex-direction: column;
-    font-family: scoreFont;
-    font-size: 20px;
-    margin: 20% 12% 30% 10%;
-    padding: 15px;
+.hide-button {
+  visibility: hidden;
+}
+
+.sidebar-title {
+  font-size: 1.9rem;
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+
+#selection-container {
+  color: rgb(255, 255, 255);
+  font:1rem scoreFont;
+  padding-left: 18%;
+  padding-top: 80px;
+  text-align: center;
+  width: 65%;
+}
+
+#projectile-options {
+  padding-bottom: 15px;
+}
+
+.projectile-container {
+  display: grid;
+  grid-template-columns: 50px auto;
+  padding: 10px 14%;
+}
+
+.projectile-container p:hover {
+  color:rgb(135, 208, 233);
+}
+
+#sound-icons {
+  column-gap: 5%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-bottom: 15px;
+}
+
+.selected-projectile {
+  color:rgb(135, 208, 233);
+}
+
+#leaderboard-button {
+  background: none;
+  border: none;
+  color: white;
+  font: 1.9rem scoreFont;
+}
+
+#leaderboard-container {
+  animation: bounce-results 3s linear infinite;
+  background-color: rgb(156, 169, 179);
+  border-radius: 50px;
+  color: white;
+  font: 1.5rem scoreFont;
+  height: 0%;
+  left: 0;
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute; 
+  right: 0;
+  width: 60%;
+  z-index: 1;
+}
+
+#leaderboard-table-title {
+  font-size: 3rem;
+  padding-bottom: 5%;
+  text-align: center;
+}
+
+th, td {
+  padding-left: 40px;
+  padding-right: 50px;
+  text-align: center;
+}
+
+#leaderboard-button:hover {
+  color:rgb(135, 208, 233);
+}
+
+#mission-container {
+  background-color: rgba(135, 155, 168, 0.37);
+  border: double rgb(157, 232, 255);
+  border-radius: 25px;
+  color: rgb(238, 238, 238);
+  display: flex;
+  flex-direction: column;
+  font: 1.2rem scoreFont;
+  margin: 110px 12% auto 10%;
+  padding: 20px;
+}
+
+.mission-log-title {
+  align-items: center;
+  display: flex;
+  font-size: 2rem;
+  justify-content: space-between;
+  padding-bottom: 2%;
+}
+
+.mission-log-title span{
+  color: rgb(157, 232, 255);
+  font-size: 1rem;
+}
+
+#mission-description {
+  padding-top: 3%;
+}
+
+@keyframes slowly-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 100;
+  }
+}
+
+@keyframes bounce-results {
+  0% {top: 6%;}
+  50% {top: 0%;}
+  100% {top: 6%}
+}
+
+@media only screen and (max-width: 1700px) {
+  #selection-container, #mission-container {
+    font-size: .8rem;
   }
 
   .sidebar-title {
-    font-size: 30px;
-    padding-bottom: 5%;
+    font-size: 1.5rem;
   }
 
   .mission-log-title {
-    align-items: center;
-    display: flex;
-    font-size: 30px;
-    justify-content: space-between;
-    padding-bottom: 2%;
+    font-size: 1.5rem;
   }
-
+  
   .mission-log-title span{
-    color: rgb(157, 232, 255);
-    font-size: 17px;
+    font-size: .7rem;
   }
 
-  #mission-description {
-    padding-top: 3%;
+  #leaderboard-button {
+    font-size: 1.5rem;
+  }
+}
+
+@media only screen and (max-width: 1300px) {
+
+  h1 {
+    font-size: 4rem;
   }
 
-  .projectile-container {
-    column-gap: 4%;
-    display: grid;
-    grid-template-columns: 35px auto;
-    padding: 4% 14%;
+  .sidebar-title {
+    font-size: 1.2rem;
   }
 
-  .projectile-container p:hover {
-    color:rgb(135, 208, 233);
-  }
-
-  #sound-icons {
-    column-gap: 5%;
-    display: flex;
-    flex-direction: row;
+  .projectile-container img{
+    height: 20px;
     justify-content: center;
-    padding-bottom: 10%;
   }
 
-  .projectile-selection {
-    color:rgb(135, 208, 233);
+  .mission-log-title {
+    font-size: 1.2rem;
   }
-
-  .hide-button {
+  
+  .mission-log-title span{
+    font-size: .7rem;
     visibility: hidden;
   }
 
-  @keyframes slowly-appear {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 100;
-    }
+  #leaderboard-button {
+    font-size: 1.2rem;
   }
-
-  @keyframes bounce-results {
-    0% {top: 6%;}
-    50% {top: 0%;}
-    100% {top: 6%}
-  }
+}

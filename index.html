@@ -72,18 +72,82 @@
             </div>
           </div>
         </div>
+        <button id="leaderboard-button" class="sidebar-title ">Leaderboard</button>
       </nav>
 
       <main id="game-container">
         <canvas id="my-canvas" width="800" height="550"></canvas>
-        <div id="result-container" class="result-screen">
+        <div id="result-container" class="hide-screen">
           <p id="results"></p>
           <p id="points"></p>
           <button id="try-again-button" class="button">Try Again</button>
           <button id="level-two" class="hide-button button">Level 2</button>
           <button id="level-three" class="hide-button button">Level 3</button>
-          <button id ="scoreboard-button" class="hide-button button">Go To Scoreboard</button>
           <button id ="start-from-beginning" class="hide-button button">Play Again</button>
+        </div>
+        <div id="leaderboard-container" class="hide-screen">
+          <p id ="leaderboard-table-title">High Scores</p>
+          <table id="leaderboard-table">
+            <thead>
+              <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr >
+                <td>1.</td>
+                <td id="name-one">---</td>
+                <td id="score-one">---</td>
+              </tr>
+              <tr >
+                <td>2.</td>
+                <td id="name-two">---</td>
+                <td id="score-two">---</td>
+              </tr>
+              <tr >
+                <td>3.</td>
+                <td id="name-three">---</td>
+                <td id="score-three">---</td>
+              </tr>
+              <tr >
+                <td>4.</td>
+                <td id="name-four">---</td>
+                <td id="score-four">---</td>
+              </tr>
+              <tr >
+                <td>5.</td>
+                <td id="name-five">---</td>
+                <td id="score-five">---</td>
+              </tr>
+              <tr >
+                <td>6.</td>
+                <td id="name-six">---</td>
+                <td id="score-six">---</td>
+              </tr>
+              <tr >
+                <td>7.</td>
+                <td id="name-seven">---</td>
+                <td id="score-seven">---</td>
+              </tr>
+              <tr >
+                <td>8.</td>
+                <td id="name-eight">---</td>
+                <td id="score-eight">---</td>
+              </tr>
+              <tr >
+                <td>9.</td>
+                <td id="name-nine">---</td>
+                <td id="score-nine">---</td>
+              </tr>
+              <tr >
+                <td>10.</td>
+                <td id="name-ten">---</td>
+                <td id="score-ten">---</td>
+              </tr>
+            </tbody>
+        </table>
         </div>
       </main>
 
