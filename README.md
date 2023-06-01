@@ -18,7 +18,7 @@ This is a small and basic ball game made to reinforce my hmtl, css, and js skill
 - Collision animation
 - Different game modes (one life only, unlimited lives, etc)
 - Different ufo orientation
-- Make ufos able to send out projectiles that damage character
+- Ufos that send out projectiles to damage character
 - Ufos with varying HP that are worth multiple points
 - Ufos that move and animate
 
