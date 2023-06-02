@@ -3,36 +3,32 @@
   <head>
     <meta charset="utf-8" />
     <title>Destroy The UFOs</title>
+    <link rel="icon" type="image/x-icon" href="./icons/favicon.png">
     <link rel="stylesheet" href= "./style.css"/>
   </head>
   <body>
     <audio id="main-audio" autoplay loop >
-      <source src="./audio/suits-you-69233.mp3" type="audio/mp3">
+      <source src="./audio/main-audio.mp3" type="audio/mp3">
       Your browser does not support the audio element.
     </audio>
 
-    <audio id="button-click-audio" >
-      <source src="./audio/message-incoming-132126.mp3" type="audio/mp3">
-      Your browser does not support the audio tag.
-    </audio>
-
     <audio id="collision-audio">
-      <source src="./audio/message-incoming-132126.mp3" type="audio/mp3">
+      <source src="./audio/collision-audio.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
     <audio id="losing-screen-audio" >
-      <source src="./audio/8-bit-video-game-lose-sound-version-1-145828.mp3" type="audio/mp3">
+      <source src="./audio/losing-screen-audio.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
     <audio id="winning-screen-audio" >
-      <source src="./audio/winsquare-6993.mp3" type="audio/mp3">
+      <source src="./audio/winning-screen-audio.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
     <audio id="bounce-audio" >
-      <source src="./audio/jump_c_02-102843 (2).mp3" type="audio/mp3">
+      <source src="./audio/bounce-audio.mp3" type="audio/mp3">
       Your browser does not support the audio tag.
     </audio>
 
@@ -43,11 +39,11 @@
         <div id="sound-options">
           <p class="sidebar-title">Sound Options</p>
           <div id="sound-icons">
-            <svg  width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path id="sound-effects" d="M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z" fill="currentColor"/>
+            <svg id="sound-effects-icon" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path id="sound-effects-path" d="M11 2H9v2H7v2H5v2H1v8h4v2h2v2h2v2h2V2zM7 18v-2H5v-2H3v-4h2V8h2V6h2v12H7zm6-8h2v4h-2v-4zm8-6h-2V2h-6v2h6v2h2v12h-2v2h-6v2h6v-2h2v-2h2V6h-2V4zm-2 4h-2V6h-4v2h4v8h-4v2h4v-2h2V8z" fill="currentColor"/>
             </svg>
-            <svg  height="20" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path id="background-music" d="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z"/>
+            <svg  id="background-music-icon" height="24" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path id="background-music-path" d="M20 2.5V0L6 2v12.17A3 3 0 0 0 5 14H3a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V5.71L18 4.3v7.88a3 3 0 0 0-1-.17h-2a3 3 0 0 0 0 6h2a3 3 0 0 0 3-3V2.5z"/>
             </svg>
           </div>
         </div>
@@ -55,19 +51,19 @@
           <p class="sidebar-title">Pick Your Projectile!</p>
           <div id="projectile-icons">
             <div class="projectile-container">
-              <img src="./images/icons8-asteroid-32.png"/>
+              <img src="./icons/asteroid-projectile.png"/>
               <p id="asteroid-projectile">The default projectile. Don't ask how we got it.</p>
             </div>
             <div  class="projectile-container">
-              <img src="./images/icons8-pixel-star-30.png" />
+              <img src="./icons/star-projectile.png" />
               <p id="star-projectile">Who knew a big ball of gas would look so cute!</p>
             </div>
             <div  class="projectile-container">
-              <img src="./images/icons8-pixel-heart-48 (2).png" height="32px"/>
+              <img src="./icons/heart-projectile.png" height="32px"/>
               <p id="heart-projectile">It's not mean if we have good intentions ... right?</p>
             </div>
             <div  class="projectile-container">
-              <img src="./images/39a0467a264a285.png"  height="32px"/>
+              <img src="./icons/carrot-projectile.png"  height="32px"/>
               <p id="carrot-projectile">Because we actually don't like these all that much</p>
             </div>
           </div>

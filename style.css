@@ -1,11 +1,11 @@
 @font-face {
   font-family: titleFont;
-  src: url(fonts/power_pixel-7.ttf);
+  src: url(fonts/title-font.woff);
 }
 
 @font-face {
-  font-family: scoreFont;
-  src: url(fonts/ARCADECLASSIC.TTF);
+  font-family: textFont;
+  src: url(fonts/text-font.woff);
 }
 
 * {
@@ -19,7 +19,7 @@ html {
 }
 
 body {
-  background-image: url("images/planetbackground.jpg");
+  background-image: url("./background-images/page-background.jpg");
 }
 
 h1 {
@@ -49,7 +49,7 @@ canvas {
 }
 
 #result-container {
-  animation: slowly-appear 2s, bounce-results 3s linear infinite;
+  animation: bounce-results 3s linear infinite;
   left: 0;
   margin-left: auto;
   margin-right: auto;
@@ -64,14 +64,14 @@ canvas {
 
 #results {
   color: white;
-  font: 5rem scoreFont;
+  font: 5rem textFont;
   padding-top: 10%;
   text-align: center;
 }
 
 #points {
   color: white;
-  font: 2rem scoreFont;
+  font: 2rem textFont;
   padding-top: 10%;
   text-align: center;
 }
@@ -81,7 +81,7 @@ canvas {
   border: none;
   color: rgb(104, 104, 104);
   cursor: pointer;
-  font: 3.5rem scoreFont;
+  font: 3.5rem textFont;
   left: 0;
   margin: 10% auto;
   position: absolute;
@@ -104,7 +104,7 @@ canvas {
 
 #selection-container {
   color: rgb(255, 255, 255);
-  font:1rem scoreFont;
+  font:1rem textFont;
   padding-left: 18%;
   padding-top: 80px;
   text-align: center;
@@ -141,7 +141,7 @@ canvas {
   background: none;
   border: none;
   color: white;
-  font: 1.9rem scoreFont;
+  font: 1.9rem textFont;
 }
 
 #leaderboard-container {
@@ -149,7 +149,7 @@ canvas {
   background-color: rgb(156, 169, 179);
   border-radius: 50px;
   color: white;
-  font: 1.5rem scoreFont;
+  font: 1.5rem textFont;
   height: 0%;
   left: 0;
   margin-top: 10%;
@@ -184,7 +184,7 @@ th, td {
   color: rgb(238, 238, 238);
   display: flex;
   flex-direction: column;
-  font: 1.2rem scoreFont;
+  font: 1.2rem textFont;
   margin: 110px 12% auto 10%;
   padding: 20px;
 }
@@ -204,15 +204,6 @@ th, td {
 
 #mission-description {
   padding-top: 3%;
-}
-
-@keyframes slowly-appear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 100;
-  }
 }
 
 @keyframes bounce-results {
