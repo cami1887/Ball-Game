@@ -109,7 +109,7 @@ function toggleBackgroundMusic(event) {
 
 /*
 * Checks if background music has been turned off.
-* If not, audio will play.
+* If not, audio will be played.
 */
 function isMuted() {
   if (mutedState === false) {
@@ -119,8 +119,8 @@ function isMuted() {
 }
 
 /*
-* Switches the selected projectile by toggling the selected projectile class.
-* If statements cover multiple scenarios like where selected projectile may be the same as the current projectile or when a projectile hasn't been selected yet.
+* Switches the selected projectile by toggling the selected-projectile class.
+* 'If statements' cover scenarios such as when the selected projectile is the same as the current projectile or when a projectile hasn't been selected yet.
 */
 function selectProjectile(event) {
   if (event.target === switchProjectile || switchProjectile === undefined) {
@@ -170,9 +170,9 @@ function mouseMoveHandler(event) {
 }
 
 /*
-* Displays the highest scores up to 10. 
+* Displays the highest 10 scores. 
 * If leaderboard is selected while either losing/winning screens are up, the losing/winning screens will be removed
-* If selected during gameplay, the game will pause and continue when deselected. 
+* If leaderboard is selected during gameplay, the game will pause and continue when deselected. 
 * The buttonClick variable is used later on to continue game where it was paused
 */
 function showLeaderboard(event) {
@@ -294,8 +294,8 @@ function goLevelThree(event) {
 }
 
 /*
-* If the projectile crosses into the space determined by the x and y values set for the ufos, 
-* the ufo is 'destroyed' by changing its status to 0 and the projectile is sent in the opposite direction.
+* If the projectile crosses into the ufo's area determined by the preset x and y values, 
+* the ufo is 'destroyed' by changing its status from 1 to 0 and the projectile is sent in the opposite direction.
 * Once the level score is the same as the number of bricks set for that level, the winning screen is initiated and the game is paused
 */
 function collisionDetection() {
@@ -355,7 +355,7 @@ function collisionDetection() {
 }
 
 /*
-* Creates projectile and it's movement by setting position to a changing variable
+* Draws projectile and it's position by setting position to a changing variable
 */
 function drawProjectile() {
   ctx.beginPath();
@@ -365,7 +365,7 @@ function drawProjectile() {
 }
 
 /*
-* Creates character and it's movement by setting position to changing variable
+* Creates character and it's position by setting position to changing variable
 */
 function drawCharacter() {
   let spaceShip = new Image();
@@ -400,7 +400,7 @@ function drawUfos() {
 }
 
 /*
-* Sets the status of the ufos to true between levels when the canvas is not redrawn/reloaded
+* Resets the status of the ufos to 1 whe redrawing levels
 */
 function setUfos() {
 for (let columns = 0; columns < ufoColumnCount; columns++) {
@@ -412,7 +412,7 @@ for (let columns = 0; columns < ufoColumnCount; columns++) {
 }
 
 /*
-* Draws total score with specified styling and coordinates
+* Writes total score text with specified styling and coordinates
 */
 function drawScore() {
   ctx.font = "22px textFont";
@@ -421,7 +421,7 @@ function drawScore() {
 }
 
 /*
-* Draws current level with specified styling and coordinates
+* Writes current level text with specified styling and coordinates
 */
 function drawLevel() {
   ctx.font = "22px textFont";
@@ -430,7 +430,7 @@ function drawLevel() {
 }
 
 /*
-* Draws remaining lives with specified styling and coordinates
+* Writes remaining lives text with specified styling and coordinates
 */
 function drawLives() {
   ctx.font = "22px textFont";
@@ -442,7 +442,7 @@ function drawLives() {
 * - draws the canvas from start to finish
 * - initializes all drawing functions
 * - sets background
-* - determines the status of the leaderboard and background mute options
+* - listens for the statuses of the leaderboard and background mute options
 * - creates the canvas edges so the projectile bounces off the walls
 * - tracks number of lives
 * - updates character and projectile positions
